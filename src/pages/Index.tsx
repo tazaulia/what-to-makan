@@ -74,7 +74,7 @@ const Index = () => {
   if (showResults) {
     return (
       <div className="min-h-screen bg-[#fff5ec] p-4">
-        <div className="max-w-md mx-auto h-screen flex flex-col py-8">
+        <div className="max-w-md mx-auto min-h-screen flex flex-col py-8">
           <ResultsScreen
             dishes={matchedDishes}
             answers={answers}
