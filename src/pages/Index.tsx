@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { questions } from '../data/questions';
 import { UserAnswers, Dish } from '../types/food';
@@ -90,7 +89,7 @@ const Index = () => {
       <div className="max-w-md mx-auto h-screen flex flex-col py-8">
         <div className="text-center mb-6">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
-            🍽️ What To Makan
+            🍽️ What To Makan SG
           </h1>
           <p className="text-gray-600">Question {currentQuestionIndex + 1} of {questions.length}</p>
         </div>
