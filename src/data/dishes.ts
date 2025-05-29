@@ -3,168 +3,740 @@ import { Dish } from '../types/food';
 
 export const dishes: Dish[] = [
   {
-    name: "Chicken Rice",
+    name: "Char Kway Teow",
     tags: {
-      moisture: ["Wet"],
+      moisture: ["Dry", "Wet"],
       protein: ["Balanced"],
+      carb: ["Noodle"],
+      fried: ["Fried"],
+      spiciness: ["Low"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Thunder Tea Rice (Lei Cha)",
+    tags: {
+      moisture: ["Dry", "Wet"],
+      protein: ["Light"],
       carb: ["Rice"],
       fried: ["Not Fried"],
       spiciness: ["Low"],
-      appetite: ["Light", "Heavy"]
-    }
+      appetite: ["Heavy"],
+    },
   },
   {
-    name: "Char Kway Teow",
+    name: "Hor Fun",
     tags: {
-      moisture: ["Wet"],
-      protein: ["Balanced", "Meaty"],
+      moisture: ["Wet", "Soupy"],
+      protein: ["Balanced"],
       carb: ["Noodle"],
-      fried: ["Fried"],
-      spiciness: ["Mild"],
-      appetite: ["Heavy"]
-    }
+      fried: ["Not Fried", "Fried"],
+      spiciness: ["Low"],
+      appetite: ["Heavy"],
+    },
   },
   {
-    name: "Laksa",
+    name: "Ban Mian",
     tags: {
       moisture: ["Soupy"],
       protein: ["Balanced"],
       carb: ["Noodle"],
       fried: ["Not Fried"],
-      spiciness: ["Spicy"],
-      appetite: ["Heavy"]
-    }
+      spiciness: ["Mild"],
+      appetite: ["Heavy"],
+    },
   },
   {
-    name: "Roti Prata",
+    name: "Mala Xiang Guo",
     tags: {
-      moisture: ["Dry"],
-      protein: ["Light"],
-      carb: ["Bread"],
+      moisture: ["Dry", "Wet"],
+      protein: ["Balanced"],
+      carb: ["Rice", "Noodle", "No Carb"],
       fried: ["Fried"],
-      spiciness: ["Low"],
-      appetite: ["Light", "Snack"]
-    }
+      spiciness: ["Spicy"],
+      appetite: ["Heavy"],
+    },
   },
   {
-    name: "Bak Kut Teh",
+    name: "Fish Head Curry",
     tags: {
       moisture: ["Soupy"],
       protein: ["Meaty"],
       carb: ["Rice", "No Carb"],
       fried: ["Not Fried"],
-      spiciness: ["Mild"],
-      appetite: ["Heavy"]
-    }
+      spiciness: ["Mild", "Spicy"],
+      appetite: ["Heavy"],
+    },
   },
   {
-    name: "Satay",
+    name: "Fish Soup",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Balanced"],
+      carb: ["No Carb", "Noodle"],
+      fried: ["Not Fried"],
+      spiciness: ["Low"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Beef Noodle",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Meaty"],
+      carb: ["Noodle"],
+      fried: ["Not Fried"],
+      spiciness: ["Low"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Egg Drop Soup",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Light"],
+      carb: ["No Carb"],
+      fried: ["Not Fried"],
+      spiciness: ["Low"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Herbal Chicken Soup",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Meaty"],
+      carb: ["No Carb"],
+      fried: ["Not Fried"],
+      spiciness: ["Low"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Oyster Omelette",
+    tags: {
+      moisture: ["Wet"],
+      protein: ["Meaty"],
+      carb: ["No Carb"],
+      fried: ["Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Mapo Tofu",
+    tags: {
+      moisture: ["Wet"],
+      protein: ["Light"],
+      carb: ["Rice"],
+      fried: ["Not Fried"],
+      spiciness: ["Spicy"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Sichuan Spicy Wonton",
+    tags: {
+      moisture: ["Wet"],
+      protein: ["Balanced"],
+      carb: ["No Carb"],
+      fried: ["Fried"],
+      spiciness: ["Spicy"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Chinese BBQ Skewers",
     tags: {
       moisture: ["Dry"],
       protein: ["Meaty"],
       carb: ["No Carb"],
-      fried: ["Not Fried"],
-      spiciness: ["Mild"],
-      appetite: ["Snack", "Light"]
-    }
+      fried: ["Fried"],
+      spiciness: ["Spicy"],
+      appetite: ["Light"],
+    },
   },
   {
     name: "Fried Rice",
     tags: {
       moisture: ["Dry"],
-      protein: ["Balanced"],
+      protein: ["Light", "Balanced"],
       carb: ["Rice"],
       fried: ["Fried"],
       spiciness: ["Low", "Mild"],
-      appetite: ["Light", "Heavy"]
-    }
+      appetite: ["Heavy"],
+    },
   },
   {
-    name: "Mee Goreng",
+    name: "Butter Chicken with Rice",
     tags: {
-      moisture: ["Wet"],
-      protein: ["Balanced"],
-      carb: ["Noodle"],
-      fried: ["Fried"],
-      spiciness: ["Spicy"],
-      appetite: ["Heavy"]
-    }
-  },
-  {
-    name: "Wonton Noodles",
-    tags: {
-      moisture: ["Soupy", "Dry"],
-      protein: ["Light", "Balanced"],
-      carb: ["Noodle"],
-      fried: ["Not Fried"],
-      spiciness: ["Low"],
-      appetite: ["Light"]
-    }
-  },
-  {
-    name: "Curry Fish Head",
-    tags: {
-      moisture: ["Soupy"],
+      moisture: ["Dry", "Wet"],
       protein: ["Meaty"],
-      carb: ["Rice", "Bread"],
+      carb: ["Rice"],
       fried: ["Not Fried"],
-      spiciness: ["Spicy"],
-      appetite: ["Heavy"]
-    }
+      spiciness: ["Mild"],
+      appetite: ["Heavy"],
+    },
   },
   {
-    name: "Ice Kacang",
+    name: "Naan with Butter Chicken",
     tags: {
-      moisture: ["Wet"],
+      moisture: ["Dry", "Wet"],
+      protein: ["Light"],
+      carb: ["Bread"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Masala Dosa",
+    tags: {
+      moisture: ["Dry"],
       protein: ["Light"],
       carb: ["No Carb"],
       fried: ["Not Fried"],
-      spiciness: ["Low"],
-      appetite: ["Snack"]
-    }
+      spiciness: ["Mild"],
+      appetite: ["Light"],
+    },
   },
   {
     name: "Murtabak",
     tags: {
       moisture: ["Dry"],
       protein: ["Meaty"],
-      carb: ["Bread"],
+      carb: ["No Carb"],
       fried: ["Fried"],
       spiciness: ["Mild"],
-      appetite: ["Heavy"]
-    }
+      appetite: ["Heavy"],
+    },
   },
   {
-    name: "Fish Ball Noodles",
+    name: "Prata with Curry",
     tags: {
-      moisture: ["Soupy", "Dry"],
-      protein: ["Light", "Balanced"],
+      moisture: ["Dry", "Wet"],
+      protein: ["Light"],
+      carb: ["Bread"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Nasi Biryani",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Balanced"],
+      carb: ["Rice"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild", "Spicy"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Gudeg",
+    tags: {
+      moisture: ["Dry", "Wet"],
+      protein: ["Balanced"],
+      carb: ["Rice"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Nasi Padang",
+    tags: {
+      moisture: ["Dry", "Wet"],
+      protein: ["Balanced"],
+      carb: ["Rice"],
+      fried: ["Fried"],
+      spiciness: ["Spicy"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Ayam Geprek / Penyet",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Meaty"],
+      carb: ["Rice"],
+      fried: ["Fried"],
+      spiciness: ["Spicy"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Ayam Rica-Rica",
+    tags: {
+      moisture: ["Dry", "Wet"],
+      protein: ["Meaty"],
+      carb: ["Rice"],
+      fried: ["Fried"],
+      spiciness: ["Spicy"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Bakso",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Balanced"],
       carb: ["Noodle"],
       fried: ["Not Fried"],
       spiciness: ["Low"],
-      appetite: ["Light"]
-    }
+      appetite: ["Light"],
+    },
   },
   {
-    name: "Chili Crab",
+    name: "Tahu Telur",
+    tags: {
+      moisture: ["Wet"],
+      protein: ["Heavy"],
+      carb: ["No Carb"],
+      fried: ["Fried"],
+      spiciness: ["Low"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Japanese Curry",
     tags: {
       moisture: ["Wet"],
       protein: ["Meaty"],
-      carb: ["Bread", "No Carb"],
-      fried: ["Not Fried"],
+      carb: ["Rice"],
+      fried: ["Not Fried", "Fried"],
       spiciness: ["Spicy"],
-      appetite: ["Heavy"]
-    }
+      appetite: ["Heavy"],
+    },
   },
   {
-    name: "Dim Sum",
+    name: "Ramen",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Balanced"],
+      carb: ["Noodle"],
+      fried: ["Not Fried"],
+      spiciness: ["Low", "Mild"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Poke Bowl",
+    tags: {
+      moisture: ["Dry", "Wet"],
+      protein: ["Light", "Balanced"],
+      carb: ["Rice", "No Carb"],
+      fried: ["Not Fried"],
+      spiciness: ["Low"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Sushi",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Balanced"],
+      carb: ["Rice"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Snack"],
+    },
+  },
+  {
+    name: "Beef Bulgogi",
+    tags: {
+      moisture: ["Dry", "Wet"],
+      protein: ["Meaty"],
+      carb: ["Rice"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Korean Army Stew",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Meaty"],
+      carb: ["Noodle", "Bread"],
+      fried: ["Not Fried"],
+      spiciness: ["Spicy"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Tteokbokki",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Light"],
+      carb: ["No Carb"],
+      fried: ["Not Fried"],
+      spiciness: ["Spicy"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Mee Soto",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Light"],
+      carb: ["Noodle"],
+      fried: ["Not Fried"],
+      spiciness: ["Low"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Mee Siam",
+    tags: {
+      moisture: ["Dry", "Wet"],
+      protein: ["Light"],
+      carb: ["Noodle"],
+      fried: ["Fried"],
+      spiciness: ["Low"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Nasi Lemak",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Light", "Balanced"],
+      carb: ["Rice"],
+      fried: ["Fried"],
+      spiciness: ["Low"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Mee Rebus",
+    tags: {
+      moisture: ["Wet", "Soupy"],
+      protein: ["Light"],
+      carb: ["Noodle"],
+      fried: ["Not Fried"],
+      spiciness: ["Low"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Lontong",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Light"],
+      carb: ["No Carb"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Kacang Pool",
     tags: {
       moisture: ["Wet"],
-      protein: ["Light", "Balanced"],
+      protein: ["Light"],
+      carb: ["Bread"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Chicken Satay",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Meaty"],
       carb: ["No Carb"],
-      fried: ["Fried", "Not Fried"],
+      fried: ["Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Snack"],
+    },
+  },
+  {
+    name: "Popiah",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Light"],
+      carb: ["No Carb"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Snack"],
+    },
+  },
+  {
+    name: "Quesadilla",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Balanced"],
+      carb: ["Bread"],
+      fried: ["Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Fish Tacos",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Light", "Balanced"],
+      carb: ["Bread"],
+      fried: ["Fried"],
+      spiciness: ["Mild", "Spicy"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Kebab",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Meaty"],
+      carb: ["Bread"],
+      fried: ["Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Shawarma",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Balanced"],
+      carb: ["Bread"],
+      fried: ["Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Duck Rice",
+    tags: {
+      moisture: ["Dry", "Wet"],
+      protein: ["Balanced"],
+      carb: ["Rice"],
+      fried: ["Not Fried"],
       spiciness: ["Low"],
-      appetite: ["Snack", "Light"]
-    }
-  }
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Hokkien Mee",
+    tags: {
+      moisture: ["Wet"],
+      protein: ["Light"],
+      carb: ["Noodle"],
+      fried: ["Fried"],
+      spiciness: ["Low"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Salted Egg Chicken Rice",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Meaty"],
+      carb: ["Rice"],
+      fried: ["Fried"],
+      spiciness: ["Mild", "Low"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Spicy Chilli Crab",
+    tags: {
+      moisture: ["Wet"],
+      protein: ["Meaty"],
+      carb: ["No Carb", "Bread"],
+      fried: ["Not Fried"],
+      spiciness: ["Spicy"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Chicken Curry",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Meaty"],
+      carb: ["Rice"],
+      fried: ["Not Fried"],
+      spiciness: ["Spicy"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Laksa",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Light"],
+      carb: ["Noodle"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild", "Spicy"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Fishball Noodles",
+    tags: {
+      moisture: ["Dry", "Wet"],
+      protein: ["Light"],
+      carb: ["Noodle"],
+      fried: ["Not Fried"],
+      spiciness: ["Low"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Chicken Rice",
+    tags: {
+      moisture: ["Dry", "Wet"],
+      protein: ["Balanced"],
+      carb: ["Rice"],
+      fried: ["Not Fried"],
+      spiciness: ["Low"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Fried Carrot Cake",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Balanced"],
+      carb: ["No Carb"],
+      fried: ["Fried"],
+      spiciness: ["Low"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Wanton Mee",
+    tags: {
+      moisture: ["Dry", "Wet"],
+      protein: ["Light"],
+      carb: ["Noodle"],
+      fried: ["Not Fried", "Fried"],
+      spiciness: ["Low"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Tom Yum",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Balanced"],
+      carb: ["No Carb", "Rice"],
+      fried: ["Not Fried"],
+      spiciness: ["Spicy"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Thai Basil Chicken",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Balanced"],
+      carb: ["Rice"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Thai Green Curry",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Balanced"],
+      carb: ["No Carb", "Rice"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Pho",
+    tags: {
+      moisture: ["Soupy"],
+      protein: ["Balanced"],
+      carb: ["Noodle"],
+      fried: ["Not Fried"],
+      spiciness: ["Low"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Banh Mi",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Balanced"],
+      carb: ["Bread"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Goi Cuon (Spring Rolls)",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Light"],
+      carb: ["No Carb"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Snack"],
+    },
+  },
+  {
+    name: "Chicken Tenders with Waffles",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Meaty"],
+      carb: ["Bread"],
+      fried: ["Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Steak",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Meaty"],
+      carb: ["No Carb"],
+      fried: ["Not Fried"],
+      spiciness: ["Low"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Fried Chicken",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Meaty"],
+      carb: ["Rice"],
+      fried: ["Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Heavy"],
+    },
+  },
+  {
+    name: "Breakfast Burrito",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Balanced"],
+      carb: ["Bread"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Light"],
+    },
+  },
+  {
+    name: "Pasta Aglio Olio",
+    tags: {
+      moisture: ["Dry", "Wet"],
+      protein: ["Balanced"],
+      carb: ["Noodle"],
+      fried: ["Not Fried", "Fried"],
+      spiciness: ["Mild", "Spicy"],
+      appetite: ["Light"],
+    },
+  },
 ];
