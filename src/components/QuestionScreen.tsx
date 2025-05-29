@@ -38,17 +38,17 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 flex flex-col justify-center">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-8">
+      <div className="flex-1 flex flex-col justify-center px-2">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 text-center mb-6 md:mb-8 leading-tight">
           {question.text}
         </h2>
         
-        <div className="space-y-3 mb-8">
+        <div className="space-y-3 mb-6 md:mb-8">
           {question.options.map((option) => (
             <button
               key={option}
               onClick={() => toggleOption(option)}
-              className={`w-full p-4 rounded-xl border-2 text-lg font-medium transition-all duration-200 ${
+              className={`w-full p-3 md:p-4 rounded-xl border-2 text-base md:text-lg font-medium transition-all duration-200 ${
                 currentAnswers.includes(option)
                   ? 'bg-[#fef3f2] text-gray-700 border-[#ed2a3a]'
                   : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
@@ -62,20 +62,20 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
         <Button
           onClick={onDontCare}
           variant="outline"
-          className="w-full mb-6 py-3 text-gray-600 border-gray-300 hover:bg-gray-50"
+          className="w-full mb-4 md:mb-6 py-2.5 md:py-3 text-sm md:text-base text-gray-600 border-gray-300 hover:bg-gray-50"
         >
           Don't care
         </Button>
       </div>
 
-      <div className="flex gap-4 pt-4 border-t">
+      <div className="flex gap-3 md:gap-4 pt-4 border-t mt-auto mb-4 md:mb-0">
         {!isFirst && (
           <Button
             onClick={onPrevious}
             variant="outline"
-            className="flex-1 py-3"
+            className="flex-1 py-2.5 md:py-3 text-sm md:text-base"
           >
-            <ChevronLeft className="w-5 h-5 mr-2" />
+            <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2" />
             Previous
           </Button>
         )}
@@ -83,14 +83,14 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
         <Button
           onClick={onNext}
           disabled={!hasSelection}
-          className={`py-3 ${isFirst ? 'w-full' : 'flex-1'} ${
+          className={`py-2.5 md:py-3 text-sm md:text-base ${isFirst ? 'w-full' : 'flex-1'} ${
             hasSelection 
               ? 'bg-[#ed2a3a] hover:bg-[#d12532] text-white' 
               : 'bg-gray-300 text-gray-500'
           } transition-colors`}
         >
           {isLast ? 'Find Food' : 'Next'}
-          {!isLast && <ChevronRight className="w-5 h-5 ml-2" />}
+          {!isLast && <ChevronRight className="w-4 h-4 md:w-5 md:h-5 ml-1 md:ml-2" />}
         </Button>
       </div>
     </div>

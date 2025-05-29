@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Dish, UserAnswers } from '../types/food';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
@@ -11,6 +10,11 @@ interface ResultsScreenProps {
 }
 
 const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartOver }) => {
+  useEffect(() => {
+    // Ensure we start at the top of the results page
+    window.scrollTo(0, 0);
+  }, []);
+
   const randomCopyOptions = [
     "We read your taste, now you just makan.",
     "Aiyah, don't stress. Just pick from these.",
@@ -48,11 +52,11 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartO
   return (
     <div className="min-h-screen bg-[#fff5ec]">
       <div className="flex flex-col h-full">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+        <div className="text-center mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
             🍽️ What To Makan SG
           </h1>
-          <p className="text-gray-600">{getRandomCopy()}</p>
+          <p className="text-sm md:text-base text-gray-600">{getRandomCopy()}</p>
         </div>
 
         {selectedAnswers.length > 0 && (
@@ -70,18 +74,18 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartO
         )}
 
         <div className="flex-1">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
+          <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">
             Recommended Dishes ({dishes.length})
           </h2>
           
           {dishes.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-3 pb-6">
               {dishes.map((dish, index) => (
                 <div
                   key={`${dish.name}-${index}`}
                   className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <h3 className="font-semibold text-gray-800 text-lg">{dish.name}</h3>
+                  <h3 className="font-semibold text-gray-800 text-base md:text-lg">{dish.name}</h3>
                 </div>
               ))}
             </div>
@@ -94,7 +98,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartO
           )}
         </div>
 
-        <div className="pt-6 border-t mt-6">
+        <div className="pt-6 border-t mt-6 mb-4 md:mb-0">
           <Button
             onClick={onStartOver}
             className="w-full py-3 bg-[#ed2a3a] hover:bg-[#d12532] text-white transition-colors"

@@ -35,6 +35,8 @@ const Index = () => {
       const matches = findMatchingDishes(answers);
       setMatchedDishes(matches);
       setShowResults(true);
+      // Scroll to top when showing results
+      window.scrollTo(0, 0);
     } else {
       setCurrentQuestionIndex(prev => prev + 1);
     }
@@ -85,13 +87,13 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#fff5ec] p-4">
-      <div className="max-w-md mx-auto h-screen flex flex-col py-8">
-        <div className="text-center mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+    <div className="min-h-screen bg-[#fff5ec] p-4 pb-safe">
+      <div className="max-w-md mx-auto flex flex-col py-4 md:py-8 min-h-screen">
+        <div className="text-center mb-4 md:mb-6">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">
             🍽️ What To Makan SG
           </h1>
-          <p className="text-gray-600">Question {currentQuestionIndex + 1} of {questions.length}</p>
+          <p className="text-sm md:text-base text-gray-600">Question {currentQuestionIndex + 1} of {questions.length}</p>
         </div>
 
         <ProgressBar 
@@ -99,7 +101,7 @@ const Index = () => {
           total={questions.length} 
         />
 
-        <div className="flex-1">
+        <div className="flex-1 pb-20 md:pb-8">
           <QuestionScreen
             question={currentQuestion}
             answers={answers}
