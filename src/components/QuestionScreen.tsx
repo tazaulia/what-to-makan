@@ -50,8 +50,8 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
               onClick={() => toggleOption(option)}
               className={`w-full p-4 rounded-xl border-2 text-lg font-medium transition-all duration-200 ${
                 currentAnswers.includes(option)
-                  ? 'bg-gradient-to-r from-orange-400 to-red-500 text-white border-transparent shadow-lg transform scale-105'
-                  : 'bg-white text-gray-700 border-gray-200 hover:border-orange-300 hover:bg-orange-50'
+                  ? 'bg-[#fef3f2] text-gray-700 border-[#ed2a3a]'
+                  : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
               }`}
             >
               {option}
@@ -85,9 +85,9 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
           disabled={!hasSelection}
           className={`py-3 ${isFirst ? 'w-full' : 'flex-1'} ${
             hasSelection 
-              ? 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700' 
-              : 'bg-gray-300'
-          }`}
+              ? 'bg-[#ed2a3a] hover:bg-[#d12532] text-white' 
+              : 'bg-gray-300 text-gray-500'
+          } transition-colors`}
         >
           {isLast ? 'Find Food' : 'Next'}
           {!isLast && <ChevronRight className="w-5 h-5 ml-2" />}

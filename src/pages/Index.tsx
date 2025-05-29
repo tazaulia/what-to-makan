@@ -5,9 +5,11 @@ import { UserAnswers, Dish } from '../types/food';
 import { findMatchingDishes } from '../utils/foodMatcher';
 import QuestionScreen from '../components/QuestionScreen';
 import ResultsScreen from '../components/ResultsScreen';
+import LandingScreen from '../components/LandingScreen';
 import ProgressBar from '../components/ProgressBar';
 
 const Index = () => {
+  const [showLanding, setShowLanding] = useState(true);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<UserAnswers>({});
   const [showResults, setShowResults] = useState(false);
@@ -16,6 +18,10 @@ const Index = () => {
   const currentQuestion = questions[currentQuestionIndex];
   const isFirst = currentQuestionIndex === 0;
   const isLast = currentQuestionIndex === questions.length - 1;
+
+  const handleStartQuiz = () => {
+    setShowLanding(false);
+  };
 
   const handleAnswerChange = (questionId: string, selectedOptions: string[]) => {
     setAnswers(prev => ({
@@ -48,15 +54,26 @@ const Index = () => {
   };
 
   const handleStartOver = () => {
+    setShowLanding(true);
     setCurrentQuestionIndex(0);
     setAnswers({});
     setShowResults(false);
     setMatchedDishes([]);
   };
 
+  if (showLanding) {
+    return (
+      <div className="min-h-screen bg-[#fff5ec] p-4">
+        <div className="max-w-md mx-auto h-screen flex flex-col py-8">
+          <LandingScreen onStart={handleStartQuiz} />
+        </div>
+      </div>
+    );
+  }
+
   if (showResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-100 via-red-50 to-yellow-100 p-4">
+      <div className="min-h-screen bg-[#fff5ec] p-4">
         <div className="max-w-md mx-auto h-screen flex flex-col py-8">
           <ResultsScreen
             dishes={matchedDishes}
@@ -69,7 +86,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-100 via-red-50 to-yellow-100 p-4">
+    <div className="min-h-screen bg-[#fff5ec] p-4">
       <div className="max-w-md mx-auto h-screen flex flex-col py-8">
         <div className="text-center mb-6">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">

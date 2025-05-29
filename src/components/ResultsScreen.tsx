@@ -41,7 +41,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartO
       </div>
 
       {selectedAnswers.length > 0 && (
-        <div className="bg-orange-50 rounded-xl p-4 mb-6">
+        <div className="bg-white rounded-xl p-4 mb-6 border border-gray-200">
           <h3 className="font-semibold text-gray-800 mb-3">Your Preferences:</h3>
           <div className="space-y-2">
             {selectedAnswers.map(({ category, options }) => (
@@ -82,7 +82,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartO
       <div className="pt-6 border-t mt-6">
         <Button
           onClick={onStartOver}
-          className="w-full py-3 bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700"
+          className="w-full py-3 bg-[#ed2a3a] hover:bg-[#d12532] text-white transition-colors"
         >
           <RefreshCw className="w-5 h-5 mr-2" />
           Start Over
