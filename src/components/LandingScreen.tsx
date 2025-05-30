@@ -10,7 +10,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
   return (
     <div className="flex flex-col h-full justify-center items-center text-center px-4 pt-16 pb-16">
       <div className="flex-1 flex flex-col justify-center items-center max-w-sm mx-auto">
-        <h1 className="text-xl md:text-2xl font-bold text-gray-800 mb-3 md:mb-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3 md:mb-4">
           🍽️ What to Makan SG
         </h1>
         
