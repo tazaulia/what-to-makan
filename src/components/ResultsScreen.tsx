@@ -100,15 +100,25 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
           
           {showNoMatchesMessage && (
             <div className="mb-6 text-center">
-              <p className="text-gray-600 italic text-sm md:text-base">
-                Wah, your taste very unique ah.
-              </p>
-              <p className="text-gray-600 italic text-sm md:text-base">
-                {closeMatches.length > 0 
-                  ? "No perfect matches, but check out some close matches below!"
-                  : "No dish matches it. Maybe try again and change your answer?"
-                }
-              </p>
+              {closeMatches.length > 0 ? (
+                <>
+                  <p className="font-bold italic text-gray-600 text-sm md:text-base">
+                    Wah…your taste very unique sia.
+                  </p>
+                  <p className="italic text-gray-600 text-sm md:text-base">
+                    No perfect matches, but these ones come pretty close!
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="italic text-gray-600 text-sm md:text-base">
+                    This combo so weird, even AI also give up.
+                  </p>
+                  <p className="italic text-gray-600 text-sm md:text-base">
+                    You beat the makan algorithm. Power lah. Now try again but change your answer!
+                  </p>
+                </>
+              )}
             </div>
           )}
           

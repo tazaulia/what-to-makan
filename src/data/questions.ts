@@ -4,38 +4,38 @@ import { Question } from '../types/food';
 export const questions: Question[] = [
   {
     id: 'moisture',
-    text: 'How would you like your food today?',
-    options: ['Dry', 'Wet', 'Soupy'],
+    text: 'How much sauce/soup do you want?',
+    options: ['🍽️ Dry', '🍝 Wet', '🍲 Soupy'],
     category: 'moisture'
   },
   {
     id: 'protein',
-    text: 'How protein-heavy should it be?',
-    options: ['Light', 'Balanced', 'Meaty'],
+    text: 'How much protein do you want?',
+    options: ['🥚 Light Protein', '🍛 Medium Protein', '🥩 Protein-Dense'],
     category: 'protein'
   },
   {
     id: 'carb',
-    text: 'Which carb base should it be?',
-    options: ['Rice', 'Noodle', 'Bread', 'No Carb'],
+    text: 'What kind of carb do you want?',
+    options: ['🍚 Rice', '🍜 Noodle', '🥖 Bread', '🚫🍞 Low Carb'],
     category: 'carb'
   },
   {
     id: 'fried',
-    text: 'Do you want fried or not fried?',
-    options: ['Fried', 'Not Fried'],
+    text: 'Do you want it fried?',
+    options: ['🍳 Fried', '🥣 Not Fried'],
     category: 'fried'
   },
   {
     id: 'spiciness',
-    text: 'How spicy should it be?',
-    options: ['Low', 'Mild', 'Spicy'],
+    text: 'How spicy do you want it?',
+    options: ['🚫🌶️ Mild', '🌶️ Medium', '🔥 Spicy'],
     category: 'spiciness'
   },
   {
     id: 'appetite',
-    text: 'How big of a meal should it be?',
-    options: ['Snack', 'Light', 'Heavy'],
+    text: 'How hungry are you?',
+    options: ['🍢 Snack', '🍔 Light Meal', '🍱 Heavy Meal'],
     category: 'appetite'
   }
 ];
