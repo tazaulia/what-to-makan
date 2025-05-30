@@ -19,12 +19,19 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
   }, []);
 
   const randomCopyOptions = [
-    "We read your taste, now you just makan.",
-    "Aiyah, don't stress. Just pick from these.",
+    "We read your taste, now you just pick.",
+    "Aiyah, don't stress. Just pick one of these.",
     "Hungry liao right? Faster choose.",
-    "So picky ah. Ok lah here's your shortlist.",
+    "So picky ah. Ok bo here's your list.",
     "Here you go, options confirm syiok.",
     "Scroll no more — whack one already.",
+    "Wah, your appetite today quite solid hor.",
+    "The faster you pick, the faster you eat.",
+    "Walao. You pick so slow, later stall close liao!",
+    "Got noodle, got rice, got everything lah.",
+    "Confirm got something you like inside.",
+    "Got taste sia. These picks all confirm sedap.",
+    "This list, your ahma also approve one.",
     "This one? Solid. That one? Also can."
   ];
 
