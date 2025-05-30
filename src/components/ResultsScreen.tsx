@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { UserAnswers } from '../types/food';
 import { Button } from '@/components/ui/button';
@@ -74,9 +73,9 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
           <p className="text-sm md:text-base text-gray-600">{getRandomCopy()}</p>
         </div>
 
-        {condensedPreferences.length > 0 && (
-          <div className="bg-white rounded-xl p-4 mb-6 border border-gray-200">
-            <h3 className="font-semibold text-gray-800 mb-3 text-sm md:text-base">Your Preferences:</h3>
+        <div className="bg-white rounded-xl p-4 mb-6 border border-gray-200">
+          <h3 className="font-semibold text-gray-800 mb-3 text-sm md:text-base">Your Preferences:</h3>
+          {condensedPreferences.length > 0 ? (
             <div className="flex flex-wrap gap-2 items-center">
               {condensedPreferences.map(({ option, icon: IconComponent }, index) => (
                 <React.Fragment key={`${option}-${index}`}>
@@ -90,8 +89,17 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
                 </React.Fragment>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="text-center">
+              <p className="font-bold text-gray-600 text-sm md:text-base">
+                You like... everything? Wah, so chill one.
+              </p>
+              <p className="text-gray-600 text-sm md:text-base">
+                Hope you're ready for some random food magic.
+              </p>
+            </div>
+          )}
+        </div>
 
         <div className="flex-1">
           <h2 className="text-base md:text-lg font-bold text-gray-800 mb-4">

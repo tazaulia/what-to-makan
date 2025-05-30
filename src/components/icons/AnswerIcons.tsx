@@ -22,14 +22,14 @@ export const getIconByOption = (option: string): React.FC<{ className?: string }
     'Rice': '🍚',
     'Noodle': '🍜',
     'Bread': '🥖',
-    'Low Carb': '🚫🍞',
+    'Low Carb': '💨',
     
     // Fried
     'Fried': '🍳',
     'Not Fried': '🥣',
     
     // Spiciness
-    'Mild': '🚫🌶️',
+    'Mild': '🙂',
     'Medium': '🌶️',
     'Spicy': '🔥',
     

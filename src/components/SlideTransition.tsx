@@ -15,16 +15,20 @@ const SlideTransition: React.FC<SlideTransitionProps> = ({
   isAnimating = false
 }) => {
   const [animationPhase, setAnimationPhase] = useState<'none' | 'exit' | 'enter'>('none');
+  const [currentContent, setCurrentContent] = useState<React.ReactNode>(children);
   const [nextContent, setNextContent] = useState<React.ReactNode>(children);
 
   useEffect(() => {
     if (direction !== 'none' && isAnimating) {
-      // Start exit animation
+      // Store the new content but don't show it yet
+      setNextContent(children);
+      
+      // Start exit animation with current content
       setAnimationPhase('exit');
       
       const exitTimer = setTimeout(() => {
-        // Update content and start enter animation
-        setNextContent(children);
+        // Switch to new content and start enter animation
+        setCurrentContent(children);
         setAnimationPhase('enter');
         
         const enterTimer = setTimeout(() => {
@@ -38,6 +42,7 @@ const SlideTransition: React.FC<SlideTransitionProps> = ({
       
       return () => clearTimeout(exitTimer);
     } else {
+      setCurrentContent(children);
       setNextContent(children);
       setAnimationPhase('none');
     }
@@ -49,19 +54,15 @@ const SlideTransition: React.FC<SlideTransitionProps> = ({
     if (animationPhase === 'exit') {
       // Current content exits in the direction of navigation
       if (direction === 'left') {
-        return '-translate-x-full opacity-0'; // Exit left (going to next)
+        return '-translate-x-full opacity-0'; // Exit left (going forward)
       } else {
-        return 'translate-x-full opacity-0'; // Exit right (going to previous)
+        return 'translate-x-full opacity-0'; // Exit right (going backward)
       }
     }
     
     if (animationPhase === 'enter') {
-      // New content enters from opposite direction
-      if (direction === 'left') {
-        return 'translate-x-0 opacity-100'; // Enter from right (next question)
-      } else {
-        return 'translate-x-0 opacity-100'; // Enter from left (previous question)
-      }
+      // New content enters from opposite direction and settles in center
+      return 'translate-x-0 opacity-100';
     }
     
     return 'translate-x-0 opacity-100';
@@ -69,10 +70,11 @@ const SlideTransition: React.FC<SlideTransitionProps> = ({
 
   const getInitialPosition = () => {
     if (animationPhase === 'enter') {
+      // New content starts from opposite side of exit direction
       if (direction === 'left') {
-        return 'translate-x-full'; // Start from right (next question)
+        return 'translate-x-full opacity-0'; // Start from right (going forward)
       } else {
-        return '-translate-x-full'; // Start from left (previous question)
+        return '-translate-x-full opacity-0'; // Start from left (going backward)
       }
     }
     return '';
@@ -84,7 +86,7 @@ const SlideTransition: React.FC<SlideTransitionProps> = ({
         className={`transition-all duration-300 ease-in-out ${getInitialPosition()} ${getTransformClass()}`}
         style={{ pointerEvents: isAnimating ? 'none' : 'auto' }}
       >
-        {animationPhase === 'exit' ? children : nextContent}
+        {currentContent}
       </div>
     </div>
   );
