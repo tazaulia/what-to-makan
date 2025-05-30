@@ -33,7 +33,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
 
       <div className="mt-auto pb-12 md:pb-16">
         <p className="text-xs text-gray-500">
-          Made by{' '}
+          Built when hungry by{' '}
           <a 
             href="https://www.instagram.com/yaboitaza" 
             target="_blank" 
@@ -42,7 +42,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
           >
             Taza Aulia
           </a>
-          {' '}in sunny Singapore ☀️
+          {' '}in Singapore
         </p>
       </div>
     </div>
