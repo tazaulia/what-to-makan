@@ -4,7 +4,7 @@ import { Question } from '../types/food';
 export const questions: Question[] = [
   {
     id: 'moisture',
-    text: 'How much sauce/soup do you want?',
+    text: 'How would you like your food today?',
     options: ['Dry', 'Wet', 'Soupy'],
     category: 'moisture'
   },
@@ -34,7 +34,7 @@ export const questions: Question[] = [
   },
   {
     id: 'appetite',
-    text: 'How hungry are you?',
+    text: 'How big of a meal should it be?',
     options: ['Snack', 'Light Meal', 'Heavy Meal'],
     category: 'appetite'
   }
