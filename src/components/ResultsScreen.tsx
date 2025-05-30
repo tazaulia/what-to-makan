@@ -1,17 +1,19 @@
 
 import React, { useEffect } from 'react';
-import { Dish, UserAnswers } from '../types/food';
+import { UserAnswers } from '../types/food';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
 import { getIconByOption } from './icons/AnswerIcons';
+import { MatchResults } from '../utils/foodMatcher';
+import { questions } from '../data/questions';
 
 interface ResultsScreenProps {
-  dishes: Dish[];
+  matchResults: MatchResults;
   answers: UserAnswers;
   onStartOver: () => void;
 }
 
-const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartOver }) => {
+const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, onStartOver }) => {
   useEffect(() => {
     // Ensure we start at the top of the results page
     window.scrollTo(0, 0);
@@ -34,16 +36,22 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartO
   const getCondensedPreferences = () => {
     const preferences: Array<{ option: string; icon: React.FC<any> }> = [];
     
-    Object.entries(answers).forEach(([_, selectedOptions]) => {
+    Object.entries(answers).forEach(([questionId, selectedOptions]) => {
       if (selectedOptions && selectedOptions.length > 0) {
-        // For each category, show all selected options
-        selectedOptions.forEach(option => {
-          const IconComponent = getIconByOption(option);
-          preferences.push({
-            option,
-            icon: IconComponent
-          });
-        });
+        // Find the question to get all possible options
+        const question = questions.find(q => q.id === questionId);
+        if (question) {
+          // Only show if user didn't select all options (equivalent to don't care)
+          if (selectedOptions.length < question.options.length) {
+            selectedOptions.forEach(option => {
+              const IconComponent = getIconByOption(option);
+              preferences.push({
+                option,
+                icon: IconComponent
+              });
+            });
+          }
+        }
       }
     });
 
@@ -51,6 +59,10 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartO
   };
 
   const condensedPreferences = getCondensedPreferences();
+  const { perfectMatches, closeMatches } = matchResults;
+
+  const showCloseMatches = perfectMatches.length < 3 && closeMatches.length > 0;
+  const showNoMatchesMessage = perfectMatches.length === 0;
 
   return (
     <div className="min-h-screen bg-[#fff5ec] flex flex-col">
@@ -83,12 +95,26 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartO
 
         <div className="flex-1">
           <h2 className="text-base md:text-lg font-bold text-gray-800 mb-4">
-            Recommended Dishes ({dishes.length})
+            Perfect Matches ({perfectMatches.length})
           </h2>
           
-          {dishes.length > 0 ? (
-            <div className="space-y-3 pb-6">
-              {dishes.map((dish, index) => (
+          {showNoMatchesMessage && (
+            <div className="mb-6 text-center">
+              <p className="text-gray-600 italic text-sm md:text-base">
+                Wah, your taste very unique ah.
+              </p>
+              <p className="text-gray-600 italic text-sm md:text-base">
+                {closeMatches.length > 0 
+                  ? "No perfect matches, but check out some close matches below!"
+                  : "No dish matches it. Maybe try again and change your answer?"
+                }
+              </p>
+            </div>
+          )}
+          
+          {perfectMatches.length > 0 && (
+            <div className="space-y-3 mb-6">
+              {perfectMatches.map((dish, index) => (
                 <div
                   key={`${dish.name}-${index}`}
                   className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
@@ -97,12 +123,24 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartO
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-600 mb-4 text-sm md:text-base">
-                No exact matches found. Try adjusting your preferences!
-              </p>
-            </div>
+          )}
+
+          {showCloseMatches && (
+            <>
+              <h2 className="text-base md:text-lg font-bold text-gray-800 mb-4">
+                Close Matches ({closeMatches.length})
+              </h2>
+              <div className="space-y-3 pb-6">
+                {closeMatches.map((dish, index) => (
+                  <div
+                    key={`${dish.name}-${index}`}
+                    className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <h3 className="font-semibold text-gray-800 text-sm md:text-base">{dish.name}</h3>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
 

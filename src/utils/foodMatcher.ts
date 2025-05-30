@@ -2,7 +2,12 @@
 import { Dish, UserAnswers } from '../types/food';
 import { dishes } from '../data/dishes';
 
-export function findMatchingDishes(answers: UserAnswers): Dish[] {
+export interface MatchResults {
+  perfectMatches: Dish[];
+  closeMatches: Dish[];
+}
+
+export function findMatchingDishes(answers: UserAnswers): MatchResults {
   console.log('Finding matches with answers:', answers);
   
   // Calculate match score for each dish
@@ -31,26 +36,26 @@ export function findMatchingDishes(answers: UserAnswers): Dish[] {
     return {
       dish,
       score: matchScore,
-      total: totalQuestions
+      total: totalQuestions,
+      mismatches: totalQuestions - matchScore
     };
   });
 
-  console.log('Dish scores:', dishScores.map(d => ({ name: d.dish.name, score: d.score, total: d.total })));
+  console.log('Dish scores:', dishScores.map(d => ({ name: d.dish.name, score: d.score, total: d.total, mismatches: d.mismatches })));
 
-  // First try to find perfect matches
+  // Find perfect matches (score equals total questions)
   const perfectMatches = dishScores.filter(item => item.score === item.total && item.total > 0);
   
-  if (perfectMatches.length > 0) {
-    console.log('Perfect matches found:', perfectMatches.map(m => m.dish.name));
-    return shuffleArray(perfectMatches.map(item => item.dish));
-  }
-
-  // If no perfect matches, return dishes with highest scores (but must have at least 1 match)
-  const maxScore = Math.max(...dishScores.map(item => item.score));
-  const bestMatches = dishScores.filter(item => item.score === maxScore && item.score > 0);
+  // Find close matches (exactly 1 mismatch)
+  const closeMatches = dishScores.filter(item => item.mismatches === 1 && item.total > 0);
   
-  console.log('Best matches found:', bestMatches.map(m => m.dish.name));
-  return shuffleArray(bestMatches.map(item => item.dish));
+  console.log('Perfect matches found:', perfectMatches.map(m => m.dish.name));
+  console.log('Close matches found:', closeMatches.map(m => m.dish.name));
+
+  return {
+    perfectMatches: shuffleArray(perfectMatches.map(item => item.dish)),
+    closeMatches: shuffleArray(closeMatches.map(item => item.dish))
+  };
 }
 
 function shuffleArray<T>(array: T[]): T[] {

@@ -5,35 +5,43 @@ interface SlideTransitionProps {
   children: React.ReactNode;
   direction: 'left' | 'right' | 'none';
   onAnimationComplete?: () => void;
+  isAnimating?: boolean;
 }
 
 const SlideTransition: React.FC<SlideTransitionProps> = ({ 
   children, 
   direction,
-  onAnimationComplete 
+  onAnimationComplete,
+  isAnimating = false
 }) => {
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [currentDirection, setCurrentDirection] = useState<'left' | 'right' | 'none'>('none');
 
   useEffect(() => {
-    if (direction !== 'none') {
-      setIsAnimating(true);
+    if (direction !== 'none' && isAnimating) {
+      setCurrentDirection(direction);
       const timer = setTimeout(() => {
-        setIsAnimating(false);
+        setCurrentDirection('none');
         onAnimationComplete?.();
-      }, 300);
+      }, 350);
       return () => clearTimeout(timer);
     }
-  }, [direction, onAnimationComplete]);
+  }, [direction, isAnimating, onAnimationComplete]);
 
   const getTransformClass = () => {
-    if (!isAnimating) return 'translate-x-0';
-    return direction === 'left' ? '-translate-x-full' : 'translate-x-full';
+    if (!isAnimating || currentDirection === 'none') return 'translate-x-0 opacity-100';
+    
+    // Exit animation - current content slides out
+    if (currentDirection === 'left') {
+      return '-translate-x-full opacity-0';
+    } else {
+      return 'translate-x-full opacity-0';
+    }
   };
 
   return (
     <div className="relative overflow-hidden">
       <div 
-        className={`transition-transform duration-300 ease-in-out ${getTransformClass()}`}
+        className={`transition-all duration-350 ease-in-out ${getTransformClass()}`}
         style={{ pointerEvents: isAnimating ? 'none' : 'auto' }}
       >
         {children}

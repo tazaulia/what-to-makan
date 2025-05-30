@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import { questions } from '../data/questions';
-import { UserAnswers, Dish } from '../types/food';
-import { findMatchingDishes } from '../utils/foodMatcher';
+import { UserAnswers } from '../types/food';
+import { findMatchingDishes, MatchResults } from '../utils/foodMatcher';
 import QuestionScreen from '../components/QuestionScreen';
 import ResultsScreen from '../components/ResultsScreen';
 import LandingScreen from '../components/LandingScreen';
@@ -13,7 +13,7 @@ const Index = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<UserAnswers>({});
   const [showResults, setShowResults] = useState(false);
-  const [matchedDishes, setMatchedDishes] = useState<Dish[]>([]);
+  const [matchResults, setMatchResults] = useState<MatchResults>({ perfectMatches: [], closeMatches: [] });
   const [isAnimating, setIsAnimating] = useState(false);
   const [slideDirection, setSlideDirection] = useState<'left' | 'right' | 'none'>('none');
 
@@ -40,8 +40,10 @@ const Index = () => {
     setTimeout(() => {
       callback();
       setSlideDirection('none');
-      setIsAnimating(false);
-    }, 300);
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, 50);
+    }, 350);
   };
 
   const handleNext = () => {
@@ -50,7 +52,7 @@ const Index = () => {
     if (isLast) {
       // Find matching dishes and show results
       const matches = findMatchingDishes(answers);
-      setMatchedDishes(matches);
+      setMatchResults(matches);
       setShowResults(true);
       // Scroll to top when showing results
       window.scrollTo(0, 0);
@@ -82,7 +84,7 @@ const Index = () => {
     setCurrentQuestionIndex(0);
     setAnswers({});
     setShowResults(false);
-    setMatchedDishes([]);
+    setMatchResults({ perfectMatches: [], closeMatches: [] });
     setIsAnimating(false);
     setSlideDirection('none');
   };
@@ -90,7 +92,7 @@ const Index = () => {
   if (showLanding) {
     return (
       <div className="min-h-screen bg-[#fff5ec] p-4">
-        <div className="max-w-md mx-auto h-screen flex flex-col py-6 md:py-8">
+        <div className="max-w-md mx-auto h-screen flex flex-col py-4 md:py-6">
           <LandingScreen onStart={handleStartQuiz} />
         </div>
       </div>
@@ -102,7 +104,7 @@ const Index = () => {
       <div className="min-h-screen bg-[#fff5ec] p-4">
         <div className="max-w-md mx-auto min-h-screen flex flex-col py-6 md:py-8">
           <ResultsScreen
-            dishes={matchedDishes}
+            matchResults={matchResults}
             answers={answers}
             onStartOver={handleStartOver}
           />
@@ -118,7 +120,6 @@ const Index = () => {
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-2">
             🍽️ What to Makan SG
           </h1>
-          <p className="text-xs md:text-sm text-gray-600">Question {currentQuestionIndex + 1} of {questions.length}</p>
         </div>
 
         <DotStepper 
@@ -126,9 +127,9 @@ const Index = () => {
           total={questions.length} 
         />
 
-        <div className={`flex-1 pb-20 md:pb-8 transition-transform duration-300 ease-in-out ${
-          slideDirection === 'left' ? '-translate-x-full opacity-80' : 
-          slideDirection === 'right' ? 'translate-x-full opacity-80' : 
+        <div className={`flex-1 pb-20 md:pb-8 transition-all duration-350 ease-in-out ${
+          isAnimating && slideDirection === 'left' ? '-translate-x-full opacity-0' : 
+          isAnimating && slideDirection === 'right' ? 'translate-x-full opacity-0' : 
           'translate-x-0 opacity-100'
         }`}>
           <QuestionScreen
