@@ -1,7 +1,9 @@
+
 import React, { useEffect } from 'react';
 import { Dish, UserAnswers } from '../types/food';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
+import { getIconByOption } from './icons/AnswerIcons';
 
 interface ResultsScreenProps {
   dishes: Dish[];
@@ -29,52 +31,58 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartO
     return randomCopyOptions[Math.floor(Math.random() * randomCopyOptions.length)];
   };
 
-  const getSelectedAnswersText = () => {
-    const categories = {
-      moisture: 'Food style',
-      protein: 'Protein level',
-      carb: 'Carb base',
-      fried: 'Preparation',
-      spiciness: 'Spice level',
-      appetite: 'Meal size'
-    };
+  const getCondensedPreferences = () => {
+    const preferences: Array<{ option: string; icon: React.FC<any> }> = [];
+    
+    Object.entries(answers).forEach(([_, selectedOptions]) => {
+      if (selectedOptions && selectedOptions.length > 0) {
+        // For each category, show all selected options
+        selectedOptions.forEach(option => {
+          const IconComponent = getIconByOption(option);
+          preferences.push({
+            option,
+            icon: IconComponent
+          });
+        });
+      }
+    });
 
-    return Object.entries(answers)
-      .filter(([_, options]) => options.length > 0)
-      .map(([category, options]) => ({
-        category: categories[category as keyof typeof categories],
-        options: options.join(', ')
-      }));
+    return preferences;
   };
 
-  const selectedAnswers = getSelectedAnswersText();
+  const condensedPreferences = getCondensedPreferences();
 
   return (
-    <div className="min-h-screen bg-[#fff5ec]">
+    <div className="min-h-screen bg-[#fff5ec] flex flex-col">
       <div className="flex flex-col h-full">
-        <div className="text-center mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
-            🍽️ What To Makan SG
+        <div className="text-center mb-4 md:mb-6">
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-3">
+            🍽️ What to Makan SG
           </h1>
           <p className="text-sm md:text-base text-gray-600">{getRandomCopy()}</p>
         </div>
 
-        {selectedAnswers.length > 0 && (
+        {condensedPreferences.length > 0 && (
           <div className="bg-white rounded-xl p-4 mb-6 border border-gray-200">
-            <h3 className="font-semibold text-gray-800 mb-3">Your Preferences:</h3>
-            <div className="space-y-2">
-              {selectedAnswers.map(({ category, options }) => (
-                <div key={category} className="text-sm">
-                  <span className="font-medium text-gray-700">{category}:</span>
-                  <span className="text-gray-600 ml-2">{options}</span>
-                </div>
+            <h3 className="font-semibold text-gray-800 mb-3 text-sm md:text-base">Your Preferences:</h3>
+            <div className="flex flex-wrap gap-2 items-center">
+              {condensedPreferences.map(({ option, icon: IconComponent }, index) => (
+                <React.Fragment key={`${option}-${index}`}>
+                  <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg">
+                    <IconComponent className="w-3.5 h-3.5 text-gray-600" />
+                    <span className="text-xs md:text-sm text-gray-700">{option}</span>
+                  </div>
+                  {index < condensedPreferences.length - 1 && (
+                    <span className="text-gray-400 text-sm">·</span>
+                  )}
+                </React.Fragment>
               ))}
             </div>
           </div>
         )}
 
         <div className="flex-1">
-          <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4">
+          <h2 className="text-base md:text-lg font-bold text-gray-800 mb-4">
             Recommended Dishes ({dishes.length})
           </h2>
           
@@ -85,13 +93,13 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartO
                   key={`${dish.name}-${index}`}
                   className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <h3 className="font-semibold text-gray-800 text-base md:text-lg">{dish.name}</h3>
+                  <h3 className="font-semibold text-gray-800 text-sm md:text-base">{dish.name}</h3>
                 </div>
               ))}
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 mb-4 text-sm md:text-base">
                 No exact matches found. Try adjusting your preferences!
               </p>
             </div>
@@ -101,9 +109,9 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ dishes, answers, onStartO
         <div className="pt-6 border-t mt-6 mb-4 md:mb-0">
           <Button
             onClick={onStartOver}
-            className="w-full py-3 bg-[#ed2a3a] hover:bg-[#d12532] text-white transition-colors"
+            className="w-full py-3 bg-[#ed2a3a] hover:bg-[#d12532] text-white transition-colors text-sm md:text-base"
           >
-            <RefreshCw className="w-5 h-5 mr-2" />
+            <RefreshCw className="w-4 h-4 md:w-5 md:h-5 mr-2" />
             Start Over
           </Button>
         </div>
