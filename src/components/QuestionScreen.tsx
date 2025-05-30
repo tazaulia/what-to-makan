@@ -77,8 +77,8 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
                     : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                 } ${isAnimating ? 'pointer-events-none' : ''}`}
               >
-                <IconComponent className="w-4 h-4 md:w-5 md:h-5 mr-3 flex-shrink-0" />
-                {option}
+                <IconComponent className="w-4 h-4 md:w-5 md:h-5 mr-3 flex-shrink-0 flex items-center justify-center" />
+                <span className="flex-1 text-left">{option}</span>
               </button>
             );
           })}

@@ -3,7 +3,7 @@ import React from 'react';
 
 // Simple emoji component wrapper
 const EmojiIcon: React.FC<{ emoji: string; className?: string }> = ({ emoji, className }) => (
-  <span className={className} style={{ fontSize: '1em' }}>{emoji}</span>
+  <span className={`${className} flex items-center justify-center`} style={{ fontSize: '1em', lineHeight: '1' }}>{emoji}</span>
 );
 
 export const getIconByOption = (option: string): React.FC<{ className?: string }> => {

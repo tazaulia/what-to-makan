@@ -76,17 +76,12 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
         <div className="bg-white rounded-xl p-4 mb-6 border border-gray-200">
           <h3 className="font-semibold text-gray-800 mb-3 text-sm md:text-base">Your Preferences:</h3>
           {condensedPreferences.length > 0 ? (
-            <div className="flex flex-wrap gap-2 items-center">
+            <div className="flex flex-wrap gap-2">
               {condensedPreferences.map(({ option, icon: IconComponent }, index) => (
-                <React.Fragment key={`${option}-${index}`}>
-                  <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg">
-                    <IconComponent className="w-3.5 h-3.5 text-gray-600" />
-                    <span className="text-xs md:text-sm text-gray-700">{option}</span>
-                  </div>
-                  {index < condensedPreferences.length - 1 && (
-                    <span className="text-gray-400 text-sm">·</span>
-                  )}
-                </React.Fragment>
+                <div key={`${option}-${index}`} className="flex items-center gap-2 bg-gray-50 px-2.5 py-1.5 rounded-lg">
+                  <IconComponent className="w-3.5 h-3.5 flex-shrink-0 flex items-center justify-center" />
+                  <span className="text-xs md:text-sm text-gray-700">{option}</span>
+                </div>
               ))}
             </div>
           ) : (
