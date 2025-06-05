@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { UserAnswers } from '../types/food';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,7 @@ import { RefreshCw } from 'lucide-react';
 import { getIconByOption } from './icons/AnswerIcons';
 import { MatchResults } from '../utils/foodMatcher';
 import { questions } from '../data/questions';
+import DishFeedback from './DishFeedback';
 
 interface ResultsScreenProps {
   matchResults: MatchResults;
@@ -64,6 +66,11 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
     return preferences;
   };
 
+  const handleDishSubmission = (dishName: string) => {
+    console.log('Dish suggestion submitted:', dishName);
+    // Here you could send the suggestion to your backend or analytics
+  };
+
   const condensedPreferences = getCondensedPreferences();
   const { perfectMatches, closeMatches } = matchResults;
 
@@ -86,7 +93,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
             <div className="flex flex-wrap gap-2">
               {condensedPreferences.map(({ option, icon: IconComponent }, index) => (
                 <div key={`${option}-${index}`} className="flex items-center gap-2 bg-gray-50 px-2.5 py-1.5 rounded-lg">
-                  <IconComponent className="w-3.5 h-3.5 flex-shrink-0 flex items-center justify-center" />
+                  <IconComponent className="w-3.5 h-3.5 flex-shrink-0" />
                   <span className="text-xs md:text-sm text-gray-700">{option}</span>
                 </div>
               ))}
@@ -164,14 +171,18 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
           )}
         </div>
 
-        <div className="pt-6 border-t mt-6 mb-4 md:mb-0">
-          <Button
-            onClick={onStartOver}
-            className="w-full py-3 bg-[#ed2a3a] hover:bg-[#d12532] text-white transition-colors text-sm md:text-base"
-          >
-            <RefreshCw className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-            Start Over
-          </Button>
+        <div className="pt-6 border-t mt-6">
+          <DishFeedback onSubmit={handleDishSubmission} />
+          
+          <div className="mb-4 md:mb-0">
+            <Button
+              onClick={onStartOver}
+              className="w-full py-3 bg-[#ed2a3a] hover:bg-[#d12532] text-white transition-colors text-sm md:text-base"
+            >
+              <RefreshCw className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+              Start Over
+            </Button>
+          </div>
         </div>
       </div>
     </div>
