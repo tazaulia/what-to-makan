@@ -4,6 +4,7 @@ import { questions } from '../data/questions';
 import { UserAnswers } from '../types/food';
 import { findMatchingDishes, MatchResults } from '../utils/foodMatcher';
 import QuestionScreen from '../components/QuestionScreen';
+import SlideTransition from '../components/SlideTransition';
 import ResultsScreen from '../components/ResultsScreen';
 import LandingScreen from '../components/LandingScreen';
 import DotStepper from '../components/DotStepper';
@@ -36,14 +37,7 @@ const Index = () => {
   const animateTransition = (direction: 'left' | 'right', callback: () => void) => {
     setIsAnimating(true);
     setSlideDirection(direction);
-    
-    setTimeout(() => {
-      callback();
-      setSlideDirection('none');
-      setTimeout(() => {
-        setIsAnimating(false);
-      }, 50);
-    }, 350);
+    callback();
   };
 
   const handleNext = () => {
@@ -127,22 +121,27 @@ const Index = () => {
           total={questions.length} 
         />
 
-        <div className={`flex-1 pb-20 md:pb-8 transition-all duration-350 ease-in-out ${
-          isAnimating && slideDirection === 'left' ? '-translate-x-full opacity-0' : 
-          isAnimating && slideDirection === 'right' ? 'translate-x-full opacity-0' : 
-          'translate-x-0 opacity-100'
-        }`}>
-          <QuestionScreen
-            question={currentQuestion}
-            answers={answers}
-            onAnswerChange={handleAnswerChange}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-            onDontCare={handleDontCare}
-            isFirst={isFirst}
-            isLast={isLast}
+        <div className="flex-1 pb-20 md:pb-8">
+          <SlideTransition
+            direction={slideDirection}
             isAnimating={isAnimating}
-          />
+            onAnimationComplete={() => {
+              setIsAnimating(false);
+              setSlideDirection('none');
+            }}
+          >
+            <QuestionScreen
+              question={currentQuestion}
+              answers={answers}
+              onAnswerChange={handleAnswerChange}
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+              onDontCare={handleDontCare}
+              isFirst={isFirst}
+              isLast={isLast}
+              isAnimating={isAnimating}
+            />
+          </SlideTransition>
         </div>
       </div>
     </div>
