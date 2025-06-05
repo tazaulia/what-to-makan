@@ -2,26 +2,54 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Send } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { UserAnswers } from '../types/food';
 
 interface DishFeedbackProps {
   onSubmit: (dishName: string) => void;
+  userPreferences?: UserAnswers;
 }
 
-const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit }) => {
+const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [dishName, setDishName] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (dishName.trim()) {
-      onSubmit(dishName.trim());
-      setDishName('');
-      setIsSubmitted(true);
-      setTimeout(() => {
-        setIsExpanded(false);
-        setIsSubmitted(false);
-      }, 2000);
+    if (dishName.trim() && !isSubmitting) {
+      setIsSubmitting(true);
+      
+      try {
+        // Store in Supabase
+        const { error } = await supabase
+          .from('dish_submissions')
+          .insert({
+            dish_name: dishName.trim(),
+            user_preferences: userPreferences || null
+          });
+
+        if (error) {
+          console.error('Error submitting dish suggestion:', error);
+        } else {
+          console.log('Dish suggestion submitted successfully:', dishName.trim());
+        }
+
+        // Call the original onSubmit callback
+        onSubmit(dishName.trim());
+        
+        setDishName('');
+        setIsSubmitted(true);
+        setTimeout(() => {
+          setIsExpanded(false);
+          setIsSubmitted(false);
+        }, 2000);
+      } catch (error) {
+        console.error('Error submitting dish suggestion:', error);
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -65,6 +93,7 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit }) => {
                   placeholder="e.g., Wonton Mee, Bak Chor Mee..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ed2a3a] focus:border-transparent"
                   autoFocus
+                  disabled={isSubmitting}
                 />
               </div>
               <div className="flex gap-2">
@@ -73,20 +102,21 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit }) => {
                   onClick={handleToggle}
                   variant="outline"
                   className="flex-1 py-2 text-xs"
+                  disabled={isSubmitting}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  disabled={!dishName.trim()}
+                  disabled={!dishName.trim() || isSubmitting}
                   className={`flex-1 py-2 text-xs ${
-                    dishName.trim()
+                    dishName.trim() && !isSubmitting
                       ? 'bg-[#ed2a3a] hover:bg-[#d12532] text-white'
                       : 'bg-gray-300 text-gray-500'
                   }`}
                 >
                   <Send className="w-3 h-3 mr-1" />
-                  Submit
+                  {isSubmitting ? 'Submitting...' : 'Submit'}
                 </Button>
               </div>
             </form>

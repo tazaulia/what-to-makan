@@ -68,7 +68,6 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
 
   const handleDishSubmission = (dishName: string) => {
     console.log('Dish suggestion submitted:', dishName);
-    // Here you could send the suggestion to your backend or analytics
   };
 
   const condensedPreferences = getCondensedPreferences();
@@ -172,7 +171,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
         </div>
 
         <div className="pt-6 border-t mt-6">
-          <DishFeedback onSubmit={handleDishSubmission} />
+          <DishFeedback onSubmit={handleDishSubmission} userPreferences={answers} />
           
           <div className="mb-4 md:mb-0">
             <Button
