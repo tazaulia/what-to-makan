@@ -10,6 +10,8 @@ interface DishFeedbackProps {
   userPreferences?: UserAnswers;
 }
 
+const MAX_DISH_NAME_LENGTH = 100;
+
 const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [dishName, setDishName] = useState('');
@@ -23,8 +25,10 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
 
     if (isSubmitting) return;
 
-    if (trimmedName.length < 2 || trimmedName.length > 100) {
-      setValidationError('Dish name must be between 2 and 100 characters');
+    if (trimmedName.length < 2 || trimmedName.length > MAX_DISH_NAME_LENGTH) {
+      setValidationError(
+        `Dish name must be between 2 and ${MAX_DISH_NAME_LENGTH} characters`
+      );
       return;
     }
 
@@ -106,6 +110,7 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
                     if (validationError) setValidationError('');
                   }}
                   placeholder="e.g., Wonton Mee, Bak Chor Mee..."
+                  maxLength={MAX_DISH_NAME_LENGTH}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ed2a3a] focus:border-transparent"
                   autoFocus
                   disabled={isSubmitting}
@@ -128,12 +133,12 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
                   type="submit"
                   disabled={
                     dishName.trim().length < 2 ||
-                    dishName.trim().length > 100 ||
+                    dishName.trim().length > MAX_DISH_NAME_LENGTH ||
                     isSubmitting
                   }
                   className={`flex-1 py-2 text-xs ${
                     dishName.trim().length >= 2 &&
-                    dishName.trim().length <= 100 &&
+                    dishName.trim().length <= MAX_DISH_NAME_LENGTH &&
                     !isSubmitting
                       ? 'bg-[#ed2a3a] hover:bg-[#d12532] text-white'
                       : 'bg-gray-300 text-gray-500'
