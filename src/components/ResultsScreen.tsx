@@ -23,7 +23,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
     "Aiyah, don't stress. Just pick one of these.",
     "Hungry liao right? Faster choose.",
     "So picky ah. Ok bo here's your list.",
-    "Here you go, options confirm syiok.",
+    "Here you go, options confirm shiok.",
     "Scroll no more — whack one already.",
     "Wah, your appetite today quite solid hor.",
     "The faster you pick, the faster you eat.",
