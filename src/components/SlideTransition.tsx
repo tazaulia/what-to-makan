@@ -45,15 +45,17 @@ const SlideTransition: React.FC<SlideTransitionProps> = ({
   }, [direction, isAnimating, children, onAnimationComplete]);
 
   const getTransformClass = () => {
+    const offscreen = direction === 'left'
+      ? 'translate-x-[100vw]'
+      : '-translate-x-[100vw]';
+
     switch (animationPhase) {
       case 'exit':
         return direction === 'left'
-          ? '-translate-x-full opacity-0'
-          : 'translate-x-full opacity-0';
+          ? '-translate-x-[100vw] opacity-0'
+          : 'translate-x-[100vw] opacity-0';
       case 'enter-start':
-        return direction === 'left'
-          ? 'translate-x-full opacity-0'
-          : '-translate-x-full opacity-0';
+        return offscreen + ' opacity-0';
       case 'enter':
         return 'translate-x-0 opacity-100';
       default:
@@ -62,9 +64,9 @@ const SlideTransition: React.FC<SlideTransitionProps> = ({
   };
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden h-full w-full">
       <div
-        className={`transition-all duration-300 ease-in-out ${getTransformClass()}`}
+        className={`absolute inset-0 w-full h-full transition-transform duration-300 ease-in-out ${getTransformClass()}`}
         style={{ pointerEvents: isAnimating ? 'none' : 'auto' }}
       >
         {currentContent}
