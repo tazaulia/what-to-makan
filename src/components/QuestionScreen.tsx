@@ -95,13 +95,7 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
         <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-800 text-center mb-4 md:mb-6 leading-tight">
           {question.text}
         </h2>
-        
-        {isFirst && (
-          <p className="text-center text-xs md:text-sm text-gray-500 mb-4">
-            You can pick more than one
-          </p>
-        )}
-        
+
         <div className="space-y-3 mb-4 md:mb-6 relative">
           {question.options.map((option) => {
             const IconComponent = getIconByOption(option);
