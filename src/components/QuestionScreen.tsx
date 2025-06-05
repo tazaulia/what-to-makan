@@ -132,43 +132,43 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
           })}
         </div>
 
-        <div className="border-t border-gray-200 pt-4 mb-4 md:mb-6">
+        <div className="border-t border-gray-200 pt-4 mt-auto mb-4 md:mb-0 pb-safe">
           <Button
             onClick={handleDontCare}
             disabled={isAnimating}
             variant="outline"
-            className="w-full py-2.5 md:py-3 text-xs md:text-sm text-gray-600 border-gray-300 hover:bg-gray-50"
+            className="w-full py-2.5 md:py-3 text-xs md:text-sm text-gray-600 border-gray-300 hover:bg-gray-50 mb-4 md:mb-6"
           >
             I'm fine with anything
           </Button>
-        </div>
-      </div>
 
-      <div className="flex gap-3 md:gap-4 pt-4 border-t mt-auto mb-4 md:mb-0 pb-safe">
-        {!isFirst && (
-          <Button
-            onClick={handlePrevious}
-            disabled={isAnimating}
-            variant="outline"
-            className="flex-1 py-2.5 md:py-3 text-xs md:text-sm"
-          >
-            <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2" />
-            Previous
-          </Button>
-        )}
-        
-        <Button
-          onClick={handleNext}
-          disabled={!hasSelection || isAnimating}
-          className={`py-2.5 md:py-3 text-xs md:text-sm ${isFirst ? 'w-full' : 'flex-1'} ${
-            hasSelection && !isAnimating
-              ? 'bg-[#ed2a3a] hover:bg-[#d12532] text-white' 
-              : 'bg-gray-300 text-gray-500'
-          } transition-colors`}
-        >
-          {isLast ? 'Find Food' : 'Next'}
-          {!isLast && <ChevronRight className="w-4 h-4 md:w-5 md:h-5 ml-1 md:ml-2" />}
-        </Button>
+          <div className="flex gap-3 md:gap-4">
+            {!isFirst && (
+              <Button
+                onClick={handlePrevious}
+                disabled={isAnimating}
+                variant="outline"
+                className="flex-1 py-2.5 md:py-3 text-xs md:text-sm"
+              >
+                <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2" />
+                Previous
+              </Button>
+            )}
+
+            <Button
+              onClick={handleNext}
+              disabled={!hasSelection || isAnimating}
+              className={`py-2.5 md:py-3 text-xs md:text-sm ${isFirst ? 'w-full' : 'flex-1'} ${
+                hasSelection && !isAnimating
+                  ? 'bg-[#ed2a3a] hover:bg-[#d12532] text-white'
+                  : 'bg-gray-300 text-gray-500'
+              } transition-colors`}
+            >
+              {isLast ? 'Find Food' : 'Next'}
+              {!isLast && <ChevronRight className="w-4 h-4 md:w-5 md:h-5 ml-1 md:ml-2" />}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );

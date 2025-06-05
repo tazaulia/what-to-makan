@@ -7,11 +7,14 @@ export interface MatchResults {
   closeMatches: Dish[];
 }
 
-export function findMatchingDishes(answers: UserAnswers): MatchResults {
+export function findMatchingDishes(
+  answers: UserAnswers,
+  allDishes: Dish[] = dishes
+): MatchResults {
   console.log('Finding matches with answers:', answers);
   
   // Calculate match score for each dish
-  const dishScores = dishes.map(dish => {
+  const dishScores = allDishes.map(dish => {
     let matchScore = 0;
     let totalQuestions = 0;
 
