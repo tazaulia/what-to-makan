@@ -15,10 +15,20 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
   const [dishName, setDishName] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationError, setValidationError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (dishName.trim() && !isSubmitting) {
+    const trimmedName = dishName.trim();
+
+    if (isSubmitting) return;
+
+    if (trimmedName.length < 2 || trimmedName.length > 100) {
+      setValidationError('Dish name must be between 2 and 100 characters');
+      return;
+    }
+
+    if (trimmedName) {
       setIsSubmitting(true);
       
       try {
@@ -26,7 +36,7 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
         const { error } = await supabase
           .from('dish_submissions')
           .insert({
-            dish_name: dishName.trim(),
+            dish_name: trimmedName,
             user_preferences: userPreferences || null
           });
 
@@ -37,10 +47,11 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
         }
 
         // Call the original onSubmit callback
-        onSubmit(dishName.trim());
-        
+        onSubmit(trimmedName);
+
         setDishName('');
         setIsSubmitted(true);
+        setValidationError('');
         setTimeout(() => {
           setIsExpanded(false);
           setIsSubmitted(false);
@@ -58,6 +69,7 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
     if (isExpanded) {
       setDishName('');
       setIsSubmitted(false);
+      setValidationError('');
     }
   };
 
@@ -89,12 +101,18 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
                   type="text"
                   id="dish-name"
                   value={dishName}
-                  onChange={(e) => setDishName(e.target.value)}
+                  onChange={(e) => {
+                    setDishName(e.target.value);
+                    if (validationError) setValidationError('');
+                  }}
                   placeholder="e.g., Wonton Mee, Bak Chor Mee..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ed2a3a] focus:border-transparent"
                   autoFocus
                   disabled={isSubmitting}
                 />
+                {validationError && (
+                  <p className="text-red-600 text-xs mt-1">{validationError}</p>
+                )}
               </div>
               <div className="flex gap-2">
                 <Button
@@ -108,9 +126,15 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
                 </Button>
                 <Button
                   type="submit"
-                  disabled={!dishName.trim() || isSubmitting}
+                  disabled={
+                    dishName.trim().length < 2 ||
+                    dishName.trim().length > 100 ||
+                    isSubmitting
+                  }
                   className={`flex-1 py-2 text-xs ${
-                    dishName.trim() && !isSubmitting
+                    dishName.trim().length >= 2 &&
+                    dishName.trim().length <= 100 &&
+                    !isSubmitting
                       ? 'bg-[#ed2a3a] hover:bg-[#d12532] text-white'
                       : 'bg-gray-300 text-gray-500'
                   }`}
