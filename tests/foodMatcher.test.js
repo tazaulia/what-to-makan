@@ -1,7 +1,8 @@
-import { describe, it, expect, vi } from 'vitest'
-import type { UserAnswers, Dish } from '../src/types/food'
+import { describe, it } from 'node:test'
+import assert from 'node:assert/strict'
+import { findMatchingDishes } from '../src/utils/foodMatcher'
 
-const mockDishes: Dish[] = [
+const mockDishes = [
   {
     name: 'Dish A',
     tags: {
@@ -37,13 +38,9 @@ const mockDishes: Dish[] = [
   }
 ]
 
-vi.mock('../src/data/dishes', () => ({ dishes: mockDishes }))
-
-import { findMatchingDishes } from '../src/utils/foodMatcher'
-
 describe('findMatchingDishes', () => {
   it('returns perfect match when all categories align', () => {
-    const answers: UserAnswers = {
+    const answers = {
       moisture: ['Dry'],
       protein: ['Light Protein'],
       carb: ['Rice'],
@@ -52,14 +49,14 @@ describe('findMatchingDishes', () => {
       appetite: ['Light Snack']
     }
 
-    const result = findMatchingDishes(answers)
+    const result = findMatchingDishes(answers, mockDishes)
 
-    expect(result.perfectMatches.map(d => d.name)).toEqual(['Dish A'])
-    expect(result.closeMatches.map(d => d.name)).toEqual(['Dish B'])
+    assert.deepStrictEqual(result.perfectMatches.map(d => d.name), ['Dish A'])
+    assert.deepStrictEqual(result.closeMatches.map(d => d.name), ['Dish B'])
   })
 
   it('returns close match when exactly one category differs', () => {
-    const answers: UserAnswers = {
+    const answers = {
       moisture: ['Wet'], // differ from Dish B only here
       protein: ['Heavy Protein'],
       carb: ['Rice'],
@@ -68,14 +65,14 @@ describe('findMatchingDishes', () => {
       appetite: ['Light Snack']
     }
 
-    const result = findMatchingDishes(answers)
+    const result = findMatchingDishes(answers, mockDishes)
 
-    expect(result.perfectMatches.map(d => d.name)).toEqual([])
-    expect(result.closeMatches.map(d => d.name)).toEqual(['Dish B'])
+    assert.deepStrictEqual(result.perfectMatches.map(d => d.name), [])
+    assert.deepStrictEqual(result.closeMatches.map(d => d.name), ['Dish B'])
   })
 
   it('returns no matches when none align', () => {
-    const answers: UserAnswers = {
+    const answers = {
       moisture: ['Soupy'],
       protein: ['Medium Protein'],
       carb: ['Bread'],
@@ -84,9 +81,9 @@ describe('findMatchingDishes', () => {
       appetite: ['Dessert']
     }
 
-    const result = findMatchingDishes(answers)
+    const result = findMatchingDishes(answers, mockDishes)
 
-    expect(result.perfectMatches).toEqual([])
-    expect(result.closeMatches).toEqual([])
+    assert.deepStrictEqual(result.perfectMatches, [])
+    assert.deepStrictEqual(result.closeMatches, [])
   })
 })
