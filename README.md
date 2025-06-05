@@ -30,10 +30,20 @@ git clone <YOUR_GIT_URL>
 cd <YOUR_PROJECT_NAME>
 
 # Step 3: Install the necessary dependencies.
+# You can also run `./setup.sh` which installs them for you.
 npm i
 
 # Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
+
+# Step 5: Copy the environment template and add your credentials.
+cp .env.example .env
+
+# Step 6: Run the tests (requires [Bun](https://bun.sh)).
+bun test
+
+# Step 7: Check types with the linter.
+npm run lint
 ```
 
 **Edit a file directly in GitHub**
