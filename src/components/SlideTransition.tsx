@@ -46,14 +46,14 @@ const SlideTransition: React.FC<SlideTransitionProps> = ({
 
   const getTransformClass = () => {
     const offscreen = direction === 'left'
-      ? 'translate-x-[100vw]'
-      : '-translate-x-[100vw]';
+      ? 'translate-x-full'
+      : '-translate-x-full';
 
     switch (animationPhase) {
       case 'exit':
         return direction === 'left'
-          ? '-translate-x-[100vw] opacity-0'
-          : 'translate-x-[100vw] opacity-0';
+          ? '-translate-x-full opacity-0'
+          : 'translate-x-full opacity-0';
       case 'enter-start':
         return offscreen + ' opacity-0';
       case 'enter':
