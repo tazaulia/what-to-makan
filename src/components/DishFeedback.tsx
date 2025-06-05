@@ -4,21 +4,37 @@ import { Button } from '@/components/ui/button';
 import { Plus, Send } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { UserAnswers } from '../types/food';
+import { sanitizeDishName } from '../utils/sanitize';
 
 interface DishFeedbackProps {
   onSubmit: (dishName: string) => void;
   userPreferences?: UserAnswers;
 }
 
+const MAX_DISH_NAME_LENGTH = 100;
+
 const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [dishName, setDishName] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationError, setValidationError] = useState('');
+  const sanitizedDishName = sanitizeDishName(dishName.trim());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (dishName.trim() && !isSubmitting) {
+    const sanitizedName = sanitizeDishName(dishName.trim());
+
+    if (isSubmitting) return;
+
+    if (sanitizedName.length < 2 || sanitizedName.length > MAX_DISH_NAME_LENGTH) {
+      setValidationError(
+        `Dish name must be between 2 and ${MAX_DISH_NAME_LENGTH} characters`
+      );
+      return;
+    }
+
+    if (sanitizedName) {
       setIsSubmitting(true);
       
       try {
@@ -26,21 +42,22 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
         const { error } = await supabase
           .from('dish_submissions')
           .insert({
-            dish_name: dishName.trim(),
+            dish_name: sanitizedName,
             user_preferences: userPreferences || null
           });
 
         if (error) {
           console.error('Error submitting dish suggestion:', error);
         } else {
-          console.log('Dish suggestion submitted successfully:', dishName.trim());
+          console.log('Dish suggestion submitted successfully:', sanitizedName);
         }
 
         // Call the original onSubmit callback
-        onSubmit(dishName.trim());
-        
+        onSubmit(sanitizedName);
+
         setDishName('');
         setIsSubmitted(true);
+        setValidationError('');
         setTimeout(() => {
           setIsExpanded(false);
           setIsSubmitted(false);
@@ -58,6 +75,7 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
     if (isExpanded) {
       setDishName('');
       setIsSubmitted(false);
+      setValidationError('');
     }
   };
 
@@ -89,12 +107,19 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
                   type="text"
                   id="dish-name"
                   value={dishName}
-                  onChange={(e) => setDishName(e.target.value)}
+                  onChange={(e) => {
+                    setDishName(e.target.value);
+                    if (validationError) setValidationError('');
+                  }}
                   placeholder="e.g., Wonton Mee, Bak Chor Mee..."
+                  maxLength={MAX_DISH_NAME_LENGTH}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ed2a3a] focus:border-transparent"
                   autoFocus
                   disabled={isSubmitting}
                 />
+                {validationError && (
+                  <p className="text-red-600 text-xs mt-1">{validationError}</p>
+                )}
               </div>
               <div className="flex gap-2">
                 <Button
@@ -108,9 +133,15 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
                 </Button>
                 <Button
                   type="submit"
-                  disabled={!dishName.trim() || isSubmitting}
+                  disabled={
+                    sanitizedDishName.length < 2 ||
+                    sanitizedDishName.length > MAX_DISH_NAME_LENGTH ||
+                    isSubmitting
+                  }
                   className={`flex-1 py-2 text-xs ${
-                    dishName.trim() && !isSubmitting
+                    sanitizedDishName.length >= 2 &&
+                    sanitizedDishName.length <= MAX_DISH_NAME_LENGTH &&
+                    !isSubmitting
                       ? 'bg-[#ed2a3a] hover:bg-[#d12532] text-white'
                       : 'bg-gray-300 text-gray-500'
                   }`}
