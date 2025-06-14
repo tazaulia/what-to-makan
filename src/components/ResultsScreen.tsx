@@ -1,11 +1,11 @@
-
 import React, { useEffect } from 'react';
 import { UserAnswers } from '../types/food';
 import { Button } from '@/components/ui/button';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, MapPin } from 'lucide-react';
 import { getIconByOption } from './icons/AnswerIcons';
 import { MatchResults } from '../utils/foodMatcher';
 import { questions } from '../data/questions';
+import { openDishInMaps } from '../utils/mapsUtils';
 import DishFeedback from './DishFeedback';
 
 interface ResultsScreenProps {
@@ -68,6 +68,11 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
 
   const handleDishSubmission = (dishName: string) => {
     console.log('Dish suggestion submitted:', dishName);
+  };
+
+  const handleLocationClick = (dishName: string) => {
+    console.log('Opening maps for dish:', dishName);
+    openDishInMaps(dishName);
   };
 
   const condensedPreferences = getCondensedPreferences();
@@ -145,7 +150,17 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
                   key={`${dish.name}-${index}`}
                   className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <h3 className="font-semibold text-gray-800 text-sm md:text-base">{dish.name}</h3>
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold text-gray-800 text-sm md:text-base">{dish.name}</h3>
+                    <button
+                      onClick={() => handleLocationClick(dish.name)}
+                      className="flex-shrink-0 p-2 text-gray-500 hover:text-[#ed2a3a] hover:bg-gray-50 rounded-lg transition-colors"
+                      aria-label={`Find ${dish.name} nearby`}
+                      title={`Find ${dish.name} nearby`}
+                    >
+                      <MapPin className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -162,7 +177,17 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
                     key={`${dish.name}-${index}`}
                     className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <h3 className="font-semibold text-gray-800 text-sm md:text-base">{dish.name}</h3>
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold text-gray-800 text-sm md:text-base">{dish.name}</h3>
+                      <button
+                        onClick={() => handleLocationClick(dish.name)}
+                        className="flex-shrink-0 p-2 text-gray-500 hover:text-[#ed2a3a] hover:bg-gray-50 rounded-lg transition-colors"
+                        aria-label={`Find ${dish.name} nearby`}
+                        title={`Find ${dish.name} nearby`}
+                      >
+                        <MapPin className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
