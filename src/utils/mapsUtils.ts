@@ -2,31 +2,29 @@
 export const openDishInMaps = (dishName: string) => {
   const encodedDishName = encodeURIComponent(dishName);
   
-  // Detect device type
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  
-  if (isMobile) {
-    if (isIOS) {
-      // iOS - try to open Apple Maps first, fallback to Google Maps
-      const appleMapsUrl = `maps://?q=${encodedDishName}+Singapore`;
-      const googleMapsUrl = `https://maps.google.com/maps?q=${encodedDishName}+near+Singapore`;
-      
-      // Try Apple Maps first
-      window.location.href = appleMapsUrl;
-      
-      // Fallback to Google Maps after a short delay if Apple Maps doesn't open
-      setTimeout(() => {
+  // Try to get user's current location for more precise "near me" search
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        // Use coordinates for precise location
+        const { latitude, longitude } = position.coords;
+        const googleMapsUrl = `https://maps.google.com/maps?q=${encodedDishName}&ll=${latitude},${longitude}&z=15`;
         window.open(googleMapsUrl, '_blank');
-      }, 1000);
-    } else {
-      // Android - use Google Maps
-      const googleMapsUrl = `https://maps.google.com/maps?q=${encodedDishName}+near+Singapore`;
-      window.open(googleMapsUrl, '_blank');
-    }
+      },
+      (error) => {
+        console.log('Geolocation denied or unavailable, using "near me" fallback');
+        // Fallback to "near me" which will use the device's location services
+        const googleMapsUrl = `https://maps.google.com/maps?q=${encodedDishName}+near+me`;
+        window.open(googleMapsUrl, '_blank');
+      },
+      {
+        timeout: 5000,
+        enableHighAccuracy: false
+      }
+    );
   } else {
-    // Desktop - open Google Maps in browser
-    const googleMapsUrl = `https://maps.google.com/maps?q=${encodedDishName}+near+Singapore`;
+    // Fallback for browsers without geolocation support
+    const googleMapsUrl = `https://maps.google.com/maps?q=${encodedDishName}+near+me`;
     window.open(googleMapsUrl, '_blank');
   }
 };
