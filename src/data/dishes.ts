@@ -728,4 +728,15 @@ export const dishes: Dish[] = [
       appetite: ["Light Meal"],
     },
   },
+  {
+    name: "Sushi",
+    tags: {
+      moisture: ["Dry"],
+      protein: ["Protein-Dense"],
+      carb: ["Rice", "Low Carb"],
+      fried: ["Not Fried"],
+      spiciness: ["Mild"],
+      appetite: ["Light Meal"],
+    },
+  },
 ];
