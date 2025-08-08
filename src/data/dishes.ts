@@ -336,11 +336,11 @@ export const dishes: Dish[] = [
     name: "Sushi",
     tags: {
       moisture: ["Dry"],
-      protein: ["Medium Protein"],
-      carb: ["Rice"],
+      protein: ["Medium Protein", "Protein-Dense"],
+      carb: ["Rice", "Low Carb"],
       fried: ["Not Fried"],
-      spiciness: ["Medium"],
-      appetite: ["Snack"],
+      spiciness: ["Mild", "Medium"],
+      appetite: ["Snack", "Light Meal"],
     },
   },
   {
