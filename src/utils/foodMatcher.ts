@@ -1,6 +1,5 @@
 
 import { Dish, UserAnswers } from '../types/food';
-import { dishes } from '../data/dishes';
 
 export interface MatchResults {
   perfectMatches: Dish[];
@@ -9,10 +8,10 @@ export interface MatchResults {
 
 export function findMatchingDishes(
   answers: UserAnswers,
-  allDishes: Dish[] = dishes
+  allDishes: Dish[]
 ): MatchResults {
   console.log('Finding matches with answers:', answers);
-  
+
   // Calculate match score for each dish
   const dishScores = allDishes.map(dish => {
     let matchScore = 0;
@@ -23,13 +22,13 @@ export function findMatchingDishes(
       // Only process if there are actual selections (not empty array)
       if (selectedOptions && selectedOptions.length > 0) {
         totalQuestions++;
-        
+
         // Check if dish has any of the selected options for this category
         const dishTags = dish.tags[category as keyof typeof dish.tags];
         const hasMatch = selectedOptions.some(option => dishTags.includes(option));
-        
+
         console.log(`Dish: ${dish.name}, Category: ${category}, User selected: [${selectedOptions.join(', ')}], Dish has: [${dishTags.join(', ')}], Match: ${hasMatch}`);
-        
+
         if (hasMatch) {
           matchScore++;
         }
@@ -48,10 +47,10 @@ export function findMatchingDishes(
 
   // Find perfect matches (score equals total questions)
   const perfectMatches = dishScores.filter(item => item.score === item.total && item.total > 0);
-  
+
   // Find close matches (exactly 1 mismatch)
   const closeMatches = dishScores.filter(item => item.mismatches === 1 && item.total > 0);
-  
+
   console.log('Perfect matches found:', perfectMatches.map(m => m.dish.name));
   console.log('Close matches found:', closeMatches.map(m => m.dish.name));
 

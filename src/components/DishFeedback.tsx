@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Send } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { UserAnswers } from '../types/food';
 import { sanitizeDishName } from '../utils/sanitize';
 
@@ -12,6 +11,7 @@ interface DishFeedbackProps {
 }
 
 const MAX_DISH_NAME_LENGTH = 100;
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxh-QtR5bmJ4tu-NcedHpnfqNkby9Kf3IjakuUCol1V6vqNfrp7kjWIobjBpJaScYB6Sw/exec';
 
 const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -36,21 +36,21 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
 
     if (sanitizedName) {
       setIsSubmitting(true);
-      
+
       try {
-        // Store in Supabase
-        const { error } = await supabase
-          .from('dish_submissions')
-          .insert({
+        console.log('Dish suggestion submitting to Google Sheets:', sanitizedName);
+
+        await fetch(GOOGLE_APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors', // Apps Script requires no-cors for simple POST or it fails preflight
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
             dish_name: sanitizedName,
             user_preferences: userPreferences || null
-          });
-
-        if (error) {
-          console.error('Error submitting dish suggestion:', error);
-        } else {
-          console.log('Dish suggestion submitted successfully:', sanitizedName);
-        }
+          }),
+        });
 
         // Call the original onSubmit callback
         onSubmit(sanitizedName);
@@ -138,13 +138,12 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
                     sanitizedDishName.length > MAX_DISH_NAME_LENGTH ||
                     isSubmitting
                   }
-                  className={`flex-1 py-2 text-xs ${
-                    sanitizedDishName.length >= 2 &&
+                  className={`flex-1 py-2 text-xs ${sanitizedDishName.length >= 2 &&
                     sanitizedDishName.length <= MAX_DISH_NAME_LENGTH &&
                     !isSubmitting
-                      ? 'bg-[#ed2a3a] hover:bg-[#d12532] text-white'
-                      : 'bg-gray-300 text-gray-500'
-                  }`}
+                    ? 'bg-[#ed2a3a] hover:bg-[#d12532] text-white'
+                    : 'bg-gray-300 text-gray-500'
+                    }`}
                 >
                   <Send className="w-3 h-3 mr-1" />
                   {isSubmitting ? 'Submitting...' : 'Submit'}
