@@ -1,7 +1,7 @@
 
 import { Dish } from '../types/food';
 
-export const FETCH_URL_PLACEHOLDER = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkL_ckVhScJ-qTo39tKf_1OlujLlE2ycGFRDhPCBUS6c83_VnWTy8CVxVN6O-SoYWcnLt7OfuaT0us/pub?gid=0&single=true&output=csv';
+export const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkL_ckVhScJ-qTo39tKf_1OlujLlE2ycGFRDhPCBUS6c83_VnWTy8CVxVN6O-SoYWcnLt7OfuaT0us/pub?gid=0&single=true&output=csv';
 
 export async function fetchDishesFromSheets(url: string): Promise<Dish[]> {
     try {

@@ -2,11 +2,9 @@
 import { useState, useEffect } from 'react';
 import { UserAnswers, Dish } from '../types/food';
 import { findMatchingDishes, MatchResults } from '../utils/foodMatcher';
-import { fetchDishesFromSheets, FETCH_URL_PLACEHOLDER } from '../utils/googleSheets';
+import { fetchDishesFromSheets, GOOGLE_SHEET_CSV_URL } from '../utils/googleSheets';
 import { dishes as staticFallbackDishes } from '../data/dishes';
 import { questions } from '../data/questions';
-
-const GOOGLE_SHEET_CSV_URL = FETCH_URL_PLACEHOLDER;
 
 export const useMakanQuiz = () => {
     const [showLanding, setShowLanding] = useState(true);
@@ -21,14 +19,12 @@ export const useMakanQuiz = () => {
 
     useEffect(() => {
         async function loadDishes() {
-            if (GOOGLE_SHEET_CSV_URL !== FETCH_URL_PLACEHOLDER) {
-                setLoadingDishes(true);
-                const fetchedDishes = await fetchDishesFromSheets(GOOGLE_SHEET_CSV_URL);
-                if (fetchedDishes.length > 0) {
-                    setDishes(fetchedDishes);
-                }
-                setLoadingDishes(false);
+            setLoadingDishes(true);
+            const fetchedDishes = await fetchDishesFromSheets(GOOGLE_SHEET_CSV_URL);
+            if (fetchedDishes.length > 0) {
+                setDishes(fetchedDishes);
             }
+            setLoadingDishes(false);
         }
         loadDishes();
     }, []);

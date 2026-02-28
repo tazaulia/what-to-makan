@@ -10,8 +10,6 @@ export function findMatchingDishes(
   answers: UserAnswers,
   allDishes: Dish[]
 ): MatchResults {
-  console.log('Finding matches with answers:', answers);
-
   // Calculate match score for each dish
   const dishScores = allDishes.map(dish => {
     let matchScore = 0;
@@ -27,8 +25,6 @@ export function findMatchingDishes(
         const dishTags = dish.tags[category as keyof typeof dish.tags];
         const hasMatch = selectedOptions.some(option => dishTags.includes(option));
 
-        console.log(`Dish: ${dish.name}, Category: ${category}, User selected: [${selectedOptions.join(', ')}], Dish has: [${dishTags.join(', ')}], Match: ${hasMatch}`);
-
         if (hasMatch) {
           matchScore++;
         }
@@ -43,16 +39,11 @@ export function findMatchingDishes(
     };
   });
 
-  console.log('Dish scores:', dishScores.map(d => ({ name: d.dish.name, score: d.score, total: d.total, mismatches: d.mismatches })));
-
   // Find perfect matches (score equals total questions)
   const perfectMatches = dishScores.filter(item => item.score === item.total && item.total > 0);
 
   // Find close matches (exactly 1 mismatch)
   const closeMatches = dishScores.filter(item => item.mismatches === 1 && item.total > 0);
-
-  console.log('Perfect matches found:', perfectMatches.map(m => m.dish.name));
-  console.log('Close matches found:', closeMatches.map(m => m.dish.name));
 
   return {
     perfectMatches: shuffleArray(perfectMatches.map(item => item.dish)),
