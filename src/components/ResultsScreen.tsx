@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { UserAnswers } from '../types/food';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, MapPin } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { getIconByOption } from './icons/AnswerIcons';
 import { MatchResults } from '../utils/foodMatcher';
 import { questions } from '../data/questions';
 import { openDishInMaps } from '../utils/mapsUtils';
 import DishFeedback from './DishFeedback';
+import DishCard from './DishCard';
 
 interface ResultsScreenProps {
   matchResults: MatchResults;
@@ -66,12 +67,9 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
     return preferences;
   };
 
-  const handleDishSubmission = (dishName: string) => {
-    console.log('Dish suggestion submitted:', dishName);
-  };
+  const handleDishSubmission = (_dishName: string) => {};
 
   const handleLocationClick = (dishName: string) => {
-    console.log('Opening maps for dish:', dishName);
     openDishInMaps(dishName);
   };
 
@@ -82,7 +80,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
   const showNoMatchesMessage = perfectMatches.length === 0;
 
   return (
-    <div className="min-h-screen bg-[#fff5ec] flex flex-col">
+    <div className="min-h-screen bg-cream flex flex-col">
       <div className="flex flex-col h-full">
         <div className="text-center mb-4 md:mb-6">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-3">
@@ -146,22 +144,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
           {perfectMatches.length > 0 && (
             <div className="space-y-3 mb-6">
               {perfectMatches.map((dish, index) => (
-                <div
-                  key={`${dish.name}-${index}`}
-                  className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-gray-800 text-sm md:text-base">{dish.name}</h3>
-                    <button
-                      onClick={() => handleLocationClick(dish.name)}
-                      className="flex-shrink-0 p-2 text-gray-500 hover:text-[#ed2a3a] hover:bg-gray-50 rounded-lg transition-colors"
-                      aria-label={`Find ${dish.name} nearby`}
-                      title={`Find ${dish.name} nearby`}
-                    >
-                      <MapPin className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
+                <DishCard key={`${dish.name}-${index}`} dish={dish} onLocationClick={handleLocationClick} />
               ))}
             </div>
           )}
@@ -173,22 +156,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
               </h2>
               <div className="space-y-3 pb-6">
                 {closeMatches.map((dish, index) => (
-                  <div
-                    key={`${dish.name}-${index}`}
-                    className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-semibold text-gray-800 text-sm md:text-base">{dish.name}</h3>
-                      <button
-                        onClick={() => handleLocationClick(dish.name)}
-                        className="flex-shrink-0 p-2 text-gray-500 hover:text-[#ed2a3a] hover:bg-gray-50 rounded-lg transition-colors"
-                        aria-label={`Find ${dish.name} nearby`}
-                        title={`Find ${dish.name} nearby`}
-                      >
-                        <MapPin className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
+                  <DishCard key={`${dish.name}-${index}`} dish={dish} onLocationClick={handleLocationClick} />
                 ))}
               </div>
             </>
@@ -201,7 +169,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
           <div className="mb-4 md:mb-0">
             <Button
               onClick={onStartOver}
-              className="w-full py-3 bg-[#ed2a3a] hover:bg-[#d12532] text-white transition-colors text-sm md:text-base"
+              className="w-full py-3 bg-brand hover:bg-brand-dark text-white transition-colors text-sm md:text-base"
             >
               <RefreshCw className="w-4 h-4 md:w-5 md:h-5 mr-2" />
               Start Over

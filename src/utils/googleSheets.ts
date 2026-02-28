@@ -17,12 +17,9 @@ export async function fetchDishesFromSheets(url: string): Promise<Dish[]> {
 
 function parseCSVDishes(csv: string): Dish[] {
     const lines = csv.split('\n');
-    const headers = lines[0].split(',');
 
     return lines.slice(1).filter(line => line.trim() !== '').map(line => {
-        // Basic CSV parser that handles quotes
-        const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
-        const cleanValues = values.map(v => v.replace(/^"|"$/g, ''));
+        const cleanValues = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
 
         return {
             name: cleanValues[0],

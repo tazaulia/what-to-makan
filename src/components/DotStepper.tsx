@@ -15,10 +15,10 @@ const DotStepper: React.FC<DotStepperProps> = ({ current, total }) => {
         
         if (stepNumber < current) {
           // Past questions - solid red
-          className += " bg-[#ed2a3a]";
+          className += " bg-brand";
         } else if (stepNumber === current) {
           // Current question - outlined red
-          className += " border-2 border-[#ed2a3a] bg-transparent";
+          className += " border-2 border-brand bg-transparent";
         } else {
           // Future questions - light grey
           className += " bg-gray-300";

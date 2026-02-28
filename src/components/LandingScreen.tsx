@@ -25,7 +25,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
 
         <Button
           onClick={onStart}
-          className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold bg-[#ed2a3a] text-white hover:bg-[#d12532] transition-colors rounded-lg"
+          className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold bg-brand text-white hover:bg-brand-dark transition-colors rounded-lg"
         >
           Let's start!
         </Button>

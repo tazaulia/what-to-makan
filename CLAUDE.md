@@ -38,9 +38,10 @@ All quiz state lives in one hook: `src/hooks/useMakanQuiz.ts`. The page componen
 | `src/utils/mapsUtils.ts` | Opens Google Maps search for a dish |
 | `src/utils/sanitize.ts` | Strips HTML tags from user-submitted dish names |
 | `src/pages/Index.tsx` | Main page — renders Landing / Quiz / Results |
-| `src/App.tsx` | Root — QueryClientProvider, TooltipProvider, Router |
+| `src/components/DishCard.tsx` | Single dish result card with name + Google Maps button |
+| `src/App.tsx` | Root — TooltipProvider, Router |
 
-The `src/components/ui/` folder contains 57 shadcn-ui components. Most are unused scaffolding; only a few are actually used in the app.
+The `src/components/ui/` folder contains 7 shadcn-ui components: `button`, `checkbox`, `toaster`, `toast`, `sonner`, `tooltip`, `use-toast`.
 
 ---
 
@@ -168,19 +169,21 @@ No `.env` file needed — all URLs are hardcoded constants.
 
 ## Brand Tokens
 
-| Token | Value | Where used |
-|-------|-------|------------|
-| Primary red | `#ed2a3a` | Buttons, focus rings |
-| Hover red | `#d12532` | Button hover state |
-| Background | `#fff5ec` | App background (cream) |
+Defined in `tailwind.config.ts` and usable as Tailwind classes anywhere.
+
+| Tailwind token | Hex | Where used |
+|----------------|-----|------------|
+| `brand` | `#ed2a3a` | Buttons, borders, focus rings, active states |
+| `brand-dark` | `#d12532` | Hover state for brand elements |
+| `brand-light` | `#fef3f2` | Selected option background (very light pink) |
+| `cream` | `#fff5ec` | App background |
 | Font | System default | No custom font set |
 
 ---
 
 ## Gotchas
 
-- **shadcn-ui bloat**: The `src/components/ui/` folder has 57 components from scaffolding. Most are unused. Don't delete them automatically — shadcn manages them. Only the ones imported elsewhere are actually used.
 - **TypeScript strict mode is off**: `tsconfig.json` has `"strict": false`. Don't rely on strict null checks.
 - **Dish tags are multi-value by design**: `moisture: ["Dry", "Wet"]` means the dish matches either preference, not that it's both simultaneously.
 - **No routing beyond `/`**: The app is a single-page flow. `NotFound.tsx` exists but there are no other routes.
-- **`@tanstack/react-query` is set up but not used**: `QueryClient` is in `App.tsx` as scaffolding. All data fetching is manual (`useEffect` + `fetch`).
+- **Data fetching is manual**: All fetching uses `useEffect` + `fetch` directly. No data-fetching library.

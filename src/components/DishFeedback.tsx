@@ -38,8 +38,6 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
       setIsSubmitting(true);
 
       try {
-        console.log('Dish suggestion submitting to Google Sheets:', sanitizedName);
-
         await fetch(GOOGLE_APPS_SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors', // Apps Script requires no-cors for simple POST or it fails preflight
@@ -113,7 +111,7 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
                   }}
                   placeholder="e.g., Wonton Mee, Bak Chor Mee..."
                   maxLength={MAX_DISH_NAME_LENGTH}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ed2a3a] focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent"
                   autoFocus
                   disabled={isSubmitting}
                 />
@@ -141,7 +139,7 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
                   className={`flex-1 py-2 text-xs ${sanitizedDishName.length >= 2 &&
                     sanitizedDishName.length <= MAX_DISH_NAME_LENGTH &&
                     !isSubmitting
-                    ? 'bg-[#ed2a3a] hover:bg-[#d12532] text-white'
+                    ? 'bg-brand hover:bg-brand-dark text-white'
                     : 'bg-gray-300 text-gray-500'
                     }`}
                 >
