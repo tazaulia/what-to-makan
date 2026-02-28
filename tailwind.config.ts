@@ -19,6 +19,12 @@ export default {
 		},
 		extend: {
 			colors: {
+				// App brand tokens
+				brand: '#ed2a3a',
+				'brand-dark': '#d12532',
+				'brand-light': '#fef3f2',
+				cream: '#fff5ec',
+				// shadcn-ui system colors
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

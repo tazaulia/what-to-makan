@@ -29,7 +29,7 @@ const Index = () => {
 
   if (showLanding) {
     return (
-      <div className="min-h-screen bg-[#fff5ec] p-4">
+      <div className="min-h-screen bg-cream p-4">
         <div className="max-w-md mx-auto h-screen flex flex-col py-4 md:py-6">
           <LandingScreen onStart={handleStartQuiz} />
         </div>
@@ -39,7 +39,7 @@ const Index = () => {
 
   if (showResults) {
     return (
-      <div className="min-h-screen bg-[#fff5ec] p-4">
+      <div className="min-h-screen bg-cream p-4">
         <div className="max-w-md mx-auto min-h-screen flex flex-col py-6 md:py-8">
           <ResultsScreen
             matchResults={matchResults}
@@ -52,7 +52,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#fff5ec] p-4 pb-safe">
+    <div className="min-h-screen bg-cream p-4 pb-safe">
       <div className="max-w-md mx-auto flex flex-col py-4 md:py-6 min-h-screen">
         <div className="text-center mb-4 md:mb-6">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-2">
@@ -70,7 +70,7 @@ const Index = () => {
             'translate-x-0 opacity-100'
           }`}>
           {loadingDishes && (
-            <div className="absolute inset-0 bg-[#fff5ec]/70 flex items-center justify-center z-10 rounded-xl">
+            <div className="absolute inset-0 bg-cream/70 flex items-center justify-center z-10 rounded-xl">
               <div className="text-gray-600 font-medium animate-pulse">Checking for fresh menu...</div>
             </div>
           )}

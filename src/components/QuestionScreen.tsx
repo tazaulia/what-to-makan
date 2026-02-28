@@ -109,7 +109,7 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
                   disabled={isAnimating}
                   className={`w-full p-3 md:p-4 rounded-xl border-2 text-sm md:text-base font-medium transition-all duration-200 flex items-center ${
                     isSelected
-                      ? 'bg-[#fef3f2] text-gray-700 border-[#ed2a3a]'
+                      ? 'bg-brand-light text-gray-700 border-brand'
                       : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                   } ${isAnimating ? 'pointer-events-none' : ''}`}
                 >
@@ -117,7 +117,7 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
                   <span className="flex-1 text-left">{option}</span>
                   <Checkbox
                     checked={isSelected}
-                    className={`ml-3 ${isSelected ? 'data-[state=checked]:bg-[#ed2a3a] data-[state=checked]:border-[#ed2a3a]' : ''}`}
+                    className={`ml-3 ${isSelected ? 'data-[state=checked]:bg-brand data-[state=checked]:border-brand' : ''}`}
                   />
                 </button>
                 
@@ -160,7 +160,7 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
               disabled={!hasSelection || isAnimating}
               className={`py-2.5 md:py-3 text-xs md:text-sm ${isFirst ? 'w-full' : 'flex-1'} ${
                 hasSelection && !isAnimating
-                  ? 'bg-[#ed2a3a] hover:bg-[#d12532] text-white'
+                  ? 'bg-brand hover:bg-brand-dark text-white'
                   : 'bg-gray-300 text-gray-500'
               } transition-colors`}
             >
