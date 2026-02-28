@@ -1,83 +1,47 @@
-# Welcome to your Lovable project
+# What to Makan SG
 
-## Project info
+**Live app → [makansg.vercel.app](https://makansg.vercel.app)**
 
-**URL**: https://lovable.dev/projects/68e73fa8-118a-4779-874c-96d5dc3c1a00
+A food recommendation quiz for Singapore. Answer 6 quick questions about what you're in the mood for, and get matched with a dish.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## How it works
 
-**Use Lovable**
+1. **Answer 6 questions** — moisture level, protein amount, carb type, fried or not, spiciness, and meal size
+2. **Matching** — your answers are compared against tags on ~70 dishes; dishes that match all your answers are "perfect matches", dishes with exactly one mismatch are "close matches"
+3. **Results** — matched dishes are shown with a "Find nearby" button that opens Google Maps
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/68e73fa8-118a-4779-874c-96d5dc3c1a00) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## Tech stack
 
-**Use your preferred IDE**
+React 18 · TypeScript · Vite · Tailwind CSS · shadcn-ui
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Local setup
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Install dependencies
+npm install
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-# You can also run `./setup.sh` which installs them for you.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start dev server (http://localhost:5174)
 npm run dev
 
-# Step 5: Copy the environment template and add your credentials.
-cp .env.example .env
-
-# Step 6: Run the tests (requires [Bun](https://bun.sh)).
-bun test
-
-# Step 7: Check types with the linter.
+# Type check
 npm run lint
+
+# Run tests
+bun test
 ```
 
-**Edit a file directly in GitHub**
+No environment variables required — the app uses hardcoded Google Sheets and Google Apps Script URLs for live data and feedback collection.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
+## Adding dishes
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Edit `src/data/dishes.ts` to add or modify dishes. The app also fetches from a live Google Sheet on startup, which overrides the static file if the fetch succeeds.
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/68e73fa8-118a-4779-874c-96d5dc3c1a00) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+See `CLAUDE.md` for full details on the tag system, matching algorithm, and all external integrations.
