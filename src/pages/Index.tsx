@@ -31,7 +31,7 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-cream p-4">
         <div className="max-w-md mx-auto h-screen flex flex-col py-4 md:py-6">
-          <LandingScreen onStart={handleStartQuiz} />
+          <LandingScreen onStart={handleStartQuiz} isLoading={loadingDishes} />
         </div>
       </div>
     );
