@@ -16,6 +16,7 @@ export const useMakanQuiz = () => {
     const [matchResults, setMatchResults] = useState<MatchResults>({ perfectMatches: [], closeMatches: [] });
     const [isAnimating, setIsAnimating] = useState(false);
     const [slideDirection, setSlideDirection] = useState<'left' | 'right' | 'none'>('none');
+    const [disableTransition, setDisableTransition] = useState(false);
 
     useEffect(() => {
         async function loadDishes() {
@@ -45,14 +46,22 @@ export const useMakanQuiz = () => {
     };
 
     const animateTransition = (direction: 'left' | 'right', callback: () => void) => {
+        const enterFrom = direction === 'left' ? 'right' : 'left';
         setIsAnimating(true);
-        setSlideDirection(direction);
+        setSlideDirection(direction); // exit phase
 
         setTimeout(() => {
-            callback();
-            setSlideDirection('none');
+            callback(); // swap question
+            setDisableTransition(true); // disable transition for instant snap
+            setSlideDirection(enterFrom); // snap to opposite side (invisible)
+
             setTimeout(() => {
-                setIsAnimating(false);
+                setDisableTransition(false); // re-enable transition
+                setSlideDirection('none'); // animate to center (enter phase)
+
+                setTimeout(() => {
+                    setIsAnimating(false);
+                }, 350);
             }, 50);
         }, 350);
     };
@@ -94,6 +103,7 @@ export const useMakanQuiz = () => {
         setMatchResults({ perfectMatches: [], closeMatches: [] });
         setIsAnimating(false);
         setSlideDirection('none');
+        setDisableTransition(false);
     };
 
     return {
@@ -106,6 +116,7 @@ export const useMakanQuiz = () => {
         loadingDishes,
         isAnimating,
         slideDirection,
+        disableTransition,
         isFirst,
         isLast,
         handleStartQuiz,
