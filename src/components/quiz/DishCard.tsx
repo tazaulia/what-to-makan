@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapPin } from 'lucide-react';
-import { Dish } from '../types/food';
+import { Dish } from '../../types/food';
 
 interface DishCardProps {
   dish: Dish;

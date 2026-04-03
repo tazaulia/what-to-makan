@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import { UserAnswers } from '../types/food';
+import { UserAnswers } from '../../types/food';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
-import { getIconByOption } from './icons/AnswerIcons';
-import { MatchResults } from '../utils/foodMatcher';
-import { questions } from '../data/questions';
-import { openDishInMaps } from '../utils/mapsUtils';
-import DishFeedback from './DishFeedback';
-import DishCard from './DishCard';
+import { getIconByOption } from '../icons/AnswerIcons';
+import { MatchResults } from '../../utils/foodMatcher';
+import { questions } from '../../data/questions';
+import { openDishInMaps } from '../../utils/mapsUtils';
+import DishFeedback from '../quiz/DishFeedback';
+import DishCard from '../quiz/DishCard';
 
 interface ResultsScreenProps {
   matchResults: MatchResults;

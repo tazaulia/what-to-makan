@@ -1,8 +1,8 @@
 import React from 'react';
-import QuestionScreen from '../components/QuestionScreen';
-import ResultsScreen from '../components/ResultsScreen';
-import LandingScreen from '../components/LandingScreen';
-import DotStepper from '../components/DotStepper';
+import QuestionScreen from '../components/screens/QuestionScreen';
+import ResultsScreen from '../components/screens/ResultsScreen';
+import LandingScreen from '../components/screens/LandingScreen';
+import DotStepper from '../components/quiz/DotStepper';
 import { useMakanQuiz } from '../hooks/useMakanQuiz';
 
 const Index = () => {

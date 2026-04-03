@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Send } from 'lucide-react';
-import { UserAnswers } from '../types/food';
-import { sanitizeDishName } from '../utils/sanitize';
+import { UserAnswers } from '../../types/food';
+import { sanitizeDishName } from '../../utils/sanitize';
 
 interface DishFeedbackProps {
   onSubmit: (dishName: string) => void;
