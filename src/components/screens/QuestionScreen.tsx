@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Question, UserAnswers } from '../types/food';
+import { Question, UserAnswers } from '../../types/food';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getIconByOption } from './icons/AnswerIcons';
+import { getIconByOption } from '../icons/AnswerIcons';
 
 interface QuestionScreenProps {
   question: Question;
