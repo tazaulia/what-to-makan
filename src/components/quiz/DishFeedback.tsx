@@ -37,34 +37,35 @@ const DishFeedback: React.FC<DishFeedbackProps> = ({ onSubmit, userPreferences }
     if (sanitizedName) {
       setIsSubmitting(true);
 
-      try {
-        await fetch(GOOGLE_APPS_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors', // Apps Script requires no-cors for simple POST or it fails preflight
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            dish_name: sanitizedName,
-            user_preferences: userPreferences || null
-          }),
-        });
-
-        // Call the original onSubmit callback
-        onSubmit(sanitizedName);
-
-        setDishName('');
-        setIsSubmitted(true);
-        setValidationError('');
-        setTimeout(() => {
-          setIsExpanded(false);
-          setIsSubmitted(false);
-        }, 2000);
-      } catch (error) {
+      // With mode: 'no-cors' the response is opaque and cannot be read, so we
+      // can't tell success from failure anyway. Show confirmation optimistically
+      // once the request is sent — a flaky connection or a blocked redirect
+      // should never leave the user staring at an unchanged form.
+      fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Apps Script requires no-cors for simple POST or it fails preflight
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          dish_name: sanitizedName,
+          user_preferences: userPreferences || null
+        }),
+      }).catch((error) => {
         console.error('Error submitting dish suggestion:', error);
-      } finally {
-        setIsSubmitting(false);
-      }
+      });
+
+      // Call the original onSubmit callback
+      onSubmit(sanitizedName);
+
+      setDishName('');
+      setIsSubmitted(true);
+      setValidationError('');
+      setIsSubmitting(false);
+      setTimeout(() => {
+        setIsExpanded(false);
+        setIsSubmitted(false);
+      }, 2000);
     }
   };
 
