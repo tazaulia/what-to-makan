@@ -42,6 +42,22 @@ No environment variables required — the app uses hardcoded Google Sheets and G
 
 ## Adding dishes
 
-Edit `src/data/dishes.ts` to add or modify dishes. The app also fetches from a live Google Sheet on startup, which overrides the static file if the fetch succeeds.
+Edit `src/data/dishes.ts` to add or modify dishes. Each dish needs all 6 tag categories:
 
-See `CLAUDE.md` for full details on the tag system, matching algorithm, and all external integrations.
+```typescript
+{
+  name: "Bak Chor Mee",
+  tags: {
+    moisture:   ["Dry", "Wet"],          // Dry | Wet | Soupy
+    protein:    ["Medium Protein"],       // Light Protein | Medium Protein | Protein-Dense
+    carb:       ["Noodle"],              // Rice | Noodle | Bread | Low Carb
+    fried:      ["Not Fried"],           // Fried | Not Fried
+    spiciness:  ["Mild"],                // Mild | Medium | Spicy
+    appetite:   ["Light Meal"],          // Snack | Light Meal | Heavy Meal
+  },
+},
+```
+
+A tag can list multiple values (e.g. `["Dry", "Wet"]`) — the dish will match either preference.
+
+The app also fetches from a live Google Sheet on startup, which overrides the static file if the fetch succeeds.
