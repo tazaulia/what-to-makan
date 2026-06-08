@@ -1,0 +1,19 @@
+# What to Makan SG
+
+> A food recommendation quiz for Singapore. Users answer 6 quick questions about what
+> they're in the mood for, and the app matches them against a database of ~70 local
+> dishes, then shows perfect and close matches with a "find nearby" Google Maps link.
+
+Hungry but brain cannot decide? Answer 6 questions, then can go makan already.
+
+The app is a single-page experience: a landing screen, six preference questions
+(moisture, protein, carb, fried, spiciness, appetite), and a results screen.
+
+## Pages
+
+- [Home / Quiz](https://makan.taza.me/): The full quiz and results flow.
+
+## About
+
+- Built by Taza (Taftazani Aulia), an Indonesian entrepreneur based in Singapore.
+- Live site: https://makan.taza.me/

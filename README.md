@@ -1,6 +1,6 @@
 # What to Makan SG
 
-**Live app → [makansg.vercel.app](https://makansg.vercel.app)**
+**Live app → [makan.taza.me](https://makan.taza.me)**
 
 A food recommendation quiz for Singapore. Answer 6 quick questions about what you're in the mood for, and get matched with a dish.
 
@@ -9,7 +9,7 @@ A food recommendation quiz for Singapore. Answer 6 quick questions about what yo
 ## How it works
 
 1. **Answer 6 questions** — moisture level, protein amount, carb type, fried or not, spiciness, and meal size
-2. **Matching** — your answers are compared against tags on ~70 dishes; dishes that match all your answers are "perfect matches", dishes with exactly one mismatch are "close matches"
+2. **Matching** — your answers are compared against tags on ~98 dishes; dishes that match all your answers are "perfect matches", dishes with exactly one mismatch are "close matches"
 3. **Results** — matched dishes are shown with a "Find nearby" button that opens Google Maps
 
 ---

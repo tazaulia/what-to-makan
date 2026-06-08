@@ -1,8 +1,8 @@
 # CLAUDE.md — What to Makan SG
 
-**Live app**: https://makansg.vercel.app
+**Live app**: https://makan.taza.me
 
-A food recommendation quiz for Singapore. Users answer 6 questions about what they're in the mood for, and the app matches them against a database of ~70 dishes.
+A food recommendation quiz for Singapore. Users answer 6 questions about what they're in the mood for, and the app matches them against a database of ~98 dishes.
 
 ---
 
@@ -30,18 +30,18 @@ All quiz state lives in one hook: `src/hooks/useMakanQuiz.ts`. The page componen
 |------|------|
 | `src/hooks/useMakanQuiz.ts` | All quiz state and navigation logic |
 | `src/utils/foodMatcher.ts` | Dish scoring and matching algorithm |
-| `src/data/dishes.ts` | Static dish database (69 dishes, fallback) |
+| `src/data/dishes.ts` | Static dish database (98 dishes, fallback) |
 | `src/data/questions.ts` | The 6 quiz questions |
 | `src/types/food.ts` | TypeScript interfaces: `Dish`, `Question`, `UserAnswers` |
 | `src/utils/googleSheets.ts` | Fetches live dish data from Google Sheets CSV |
-| `src/components/DishFeedback.tsx` | "Missing a dish?" suggestion form → Google Apps Script |
+| `src/components/quiz/DishFeedback.tsx` | "Missing a dish?" suggestion form → Google Apps Script |
 | `src/utils/mapsUtils.ts` | Opens Google Maps search for a dish |
 | `src/utils/sanitize.ts` | Strips HTML tags from user-submitted dish names |
 | `src/pages/Index.tsx` | Main page — renders Landing / Quiz / Results |
-| `src/components/DishCard.tsx` | Single dish result card with name + Google Maps button |
+| `src/components/quiz/DishCard.tsx` | Single dish result card with name + Google Maps button |
 | `src/App.tsx` | Root — TooltipProvider, Router |
 
-The `src/components/ui/` folder contains 7 shadcn-ui components: `button`, `checkbox`, `toaster`, `toast`, `sonner`, `tooltip`, `use-toast`.
+`src/components/` is organized into subfolders: `screens/` (`LandingScreen`, `QuestionScreen`, `ResultsScreen`), `quiz/` (`DishCard`, `DishFeedback`, `DotStepper`), `icons/` (`AnswerIcons`), and `ui/` (3 shadcn-ui components: `button`, `checkbox`, `tooltip`).
 
 ---
 
@@ -141,7 +141,7 @@ The "I'm fine with anything" button (`handleDontCare`) selects all options for t
 
 ### Google Apps Script (dish suggestions)
 - **URL**: `https://script.google.com/macros/s/AKfycbxh-QtR5bmJ4tu-NcedHpnfqNkby9Kf3IjakuUCol1V6vqNfrp7kjWIobjBpJaScYB6Sw/exec`
-- Defined in: `src/components/DishFeedback.tsx` as `GOOGLE_APPS_SCRIPT_URL`
+- Defined in: `src/components/quiz/DishFeedback.tsx` as `GOOGLE_APPS_SCRIPT_URL`
 - Receives a POST with `{ dish_name, user_preferences }` — must use `mode: 'no-cors'` (Apps Script limitation)
 
 ### Google Maps (find nearby)
@@ -187,3 +187,5 @@ Defined in `tailwind.config.ts` and usable as Tailwind classes anywhere.
 - **Dish tags are multi-value by design**: `moisture: ["Dry", "Wet"]` means the dish matches either preference, not that it's both simultaneously.
 - **No routing beyond `/`**: The app is a single-page flow. `NotFound.tsx` exists but there are no other routes.
 - **Data fetching is manual**: All fetching uses `useEffect` + `fetch` directly. No data-fetching library.
+- **CSP will block new external domains**: `vercel.json` sets a strict Content-Security-Policy. If you add a fetch/script/image from a *new* domain, the browser silently blocks it until you add that domain to the matching directive (`connect-src`, `script-src`, `img-src`, etc.) in `vercel.json`.
+- **Canonical domain is `makan.taza.me`**: `makansg.vercel.app` 308-redirects to it. Keep absolute URLs (canonical, og:url, og:image, sitemap, robots) pointing at `makan.taza.me`.
