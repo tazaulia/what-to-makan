@@ -72,9 +72,9 @@ export const questions: Question[] = [
     text: 'Any food rules today?',
     helper: 'Pick any that apply — or just skip.',
     options: [
-      { label: 'No fried', value: 'No Fried' },
-      { label: 'High protein', value: 'High Protein' },
       { label: 'No pork', value: 'No Pork' },
+      { label: 'Not fried', value: 'No Fried' },
+      { label: 'High protein', value: 'High Protein' },
     ],
   },
 ];
