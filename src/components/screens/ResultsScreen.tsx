@@ -50,13 +50,15 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
         // Find the question to get all possible options
         const question = questions.find(q => q.id === questionId);
         if (question) {
-          // Only show if user didn't select all options (equivalent to don't care)
-          if (selectedOptions.length < question.options.length) {
-            selectedOptions.forEach(option => {
-              const IconComponent = getIconByOption(option);
+          // For cravings, selecting every option means "don't care" — skip it.
+          // Constraints are always meaningful, so always show them.
+          const isDontCare = question.kind === 'craving' && selectedOptions.length === question.options.length;
+          if (!isDontCare) {
+            selectedOptions.forEach(value => {
+              const matchedOption = question.options.find(o => o.value === value);
               preferences.push({
-                option,
-                icon: IconComponent
+                option: matchedOption ? matchedOption.label : value,
+                icon: getIconByOption(value)
               });
             });
           }

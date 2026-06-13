@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Question, UserAnswers } from '../../types/food';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getIconByOption } from '../icons/AnswerIcons';
 
 interface QuestionScreenProps {
@@ -30,46 +29,48 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
 }) => {
   const currentAnswers = answers[question.id] || [];
   const hasSelection = currentAnswers.length > 0;
+  const isConstraints = question.kind === 'constraints';
+  // Constraints are optional — you can find food without picking any.
+  const canAdvance = isConstraints || hasSelection;
+  // Cuisine has many options; lay it out as a grid so it stays scannable.
+  const useGrid = question.options.length >= 6;
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [tooltipTimeouts, setTooltipTimeouts] = useState<{ [key: string]: NodeJS.Timeout }>({});
 
+  // Keyed by the option's underlying value (tag), not its display label.
   const tooltipContent: { [key: string]: string } = {
-    'Dry': 'No sauce, like fried rice or satay',
-    'Wet': 'Saucy, like japanese curry or hokkien mee',
-    'Soupy': 'Comes in soup (duh), like ramen or laksa',
-    'Light Protein': 'Eggs, tofu, small portions of meat',
-    'Medium Protein': 'Balanced protein, like nasi lemak',
-    'Protein-Dense': 'Meat-heavy, like steak.',
-    'Snack': 'Small, like popiah.',
-    'Light Meal': 'Enough for one, like chicken rice',
-    'Heavy Meal': 'Big, filling dish, like nasi padang'
+    'Dry': 'No gravy — think nasi goreng or satay',
+    'Saucy': 'Got sauce or gravy — like hokkien mee or japanese curry',
+    'Soupy': 'Comes swimming in soup — like laksa or ramen',
+    'Snack': 'Small bite — like popiah or curry puff',
+    'Light Meal': 'Enough for one — like chicken rice',
+    'Heavy Meal': 'Big and filling — like nasi padang',
   };
 
-  const toggleOption = (option: string) => {
+  const toggleOption = (value: string) => {
     if (isAnimating) return;
-    
-    const newAnswers = currentAnswers.includes(option)
-      ? currentAnswers.filter(a => a !== option)
-      : [...currentAnswers, option];
-    
+
+    const newAnswers = currentAnswers.includes(value)
+      ? currentAnswers.filter(a => a !== value)
+      : [...currentAnswers, value];
+
     onAnswerChange(question.id, newAnswers);
 
     // Show tooltip only when selecting and if content exists
-    if (!currentAnswers.includes(option) && tooltipContent[option]) {
-      // Clear any existing timeout for this option
-      if (tooltipTimeouts[option]) {
-        clearTimeout(tooltipTimeouts[option]);
+    if (!currentAnswers.includes(value) && tooltipContent[value]) {
+      if (tooltipTimeouts[value]) {
+        clearTimeout(tooltipTimeouts[value]);
       }
 
-      setActiveTooltip(option);
-      
+      setActiveTooltip(value);
+
       const timeout = setTimeout(() => {
         setActiveTooltip(null);
       }, 1000);
 
       setTooltipTimeouts(prev => ({
         ...prev,
-        [option]: timeout
+        [value]: timeout
       }));
     }
   };
@@ -92,20 +93,25 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 flex flex-col justify-center px-2">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-800 text-center mb-4 md:mb-6 leading-tight">
+        <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-800 text-center mb-2 leading-tight">
           {question.text}
         </h2>
+        {question.helper && (
+          <p className="text-xs md:text-sm text-gray-500 text-center mb-4 md:mb-6">
+            {question.helper}
+          </p>
+        )}
 
-        <div className="space-y-3 mb-4 md:mb-6 relative">
-          {question.options.map((option) => {
-            const IconComponent = getIconByOption(option);
-            const isSelected = currentAnswers.includes(option);
-            const showTooltip = activeTooltip === option;
-            
+        <div className={`mb-4 md:mb-6 relative ${useGrid ? 'grid grid-cols-2 gap-3' : 'space-y-3'}`}>
+          {question.options.map(({ label, value }) => {
+            const IconComponent = getIconByOption(value);
+            const isSelected = currentAnswers.includes(value);
+            const showTooltip = activeTooltip === value;
+
             return (
-              <div key={option} className="relative">
+              <div key={value} className="relative">
                 <button
-                  onClick={() => toggleOption(option)}
+                  onClick={() => toggleOption(value)}
                   disabled={isAnimating}
                   className={`w-full p-3 md:p-4 rounded-xl border-2 text-sm md:text-base font-medium transition-all duration-200 flex items-center ${
                     isSelected
@@ -114,16 +120,20 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
                   } ${isAnimating ? 'pointer-events-none' : ''}`}
                 >
                   <IconComponent className="w-4 h-4 md:w-5 md:h-5 mr-3 flex-shrink-0 flex items-center justify-center" />
-                  <span className="flex-1 text-left">{option}</span>
-                  <Checkbox
-                    checked={isSelected}
-                    className={`ml-3 ${isSelected ? 'data-[state=checked]:bg-brand data-[state=checked]:border-brand' : ''}`}
-                  />
+                  <span className="flex-1 text-left">{label}</span>
+                  <span
+                    aria-hidden="true"
+                    className={`ml-2 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-[4px] border ${
+                      isSelected ? 'bg-brand border-brand text-white' : 'border-gray-300 bg-white'
+                    }`}
+                  >
+                    {isSelected && <Check className="h-3 w-3" strokeWidth={3} />}
+                  </span>
                 </button>
-                
-                {showTooltip && tooltipContent[option] && (
+
+                {showTooltip && tooltipContent[value] && (
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-10 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg max-w-xs text-center animate-in fade-in-0 zoom-in-95">
-                    {tooltipContent[option]}
+                    {tooltipContent[value]}
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-800"></div>
                   </div>
                 )}
@@ -133,14 +143,16 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
         </div>
 
         <div className="border-t border-gray-200 pt-4 mt-auto mb-4 md:mb-0 pb-safe">
-          <Button
-            onClick={handleDontCare}
-            disabled={isAnimating}
-            variant="outline"
-            className="w-full py-2.5 md:py-3 text-xs md:text-sm text-gray-600 border-gray-300 hover:bg-gray-50 mb-4 md:mb-6"
-          >
-            I'm fine with anything
-          </Button>
+          {!isConstraints && (
+            <Button
+              onClick={handleDontCare}
+              disabled={isAnimating}
+              variant="outline"
+              className="w-full py-2.5 md:py-3 text-xs md:text-sm text-gray-600 border-gray-300 hover:bg-gray-50 mb-4 md:mb-6"
+            >
+              Anything works (select all)
+            </Button>
+          )}
 
           <div className="flex gap-3 md:gap-4">
             {!isFirst && (
@@ -157,9 +169,9 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
 
             <Button
               onClick={handleNext}
-              disabled={!hasSelection || isAnimating}
+              disabled={!canAdvance || isAnimating}
               className={`py-2.5 md:py-3 text-xs md:text-sm ${isFirst ? 'w-full' : 'flex-1'} ${
-                hasSelection && !isAnimating
+                canAdvance && !isAnimating
                   ? 'bg-brand hover:bg-brand-dark text-white'
                   : 'bg-gray-300 text-gray-500'
               } transition-colors`}

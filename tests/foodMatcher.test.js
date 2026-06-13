@@ -2,88 +2,91 @@ import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import { findMatchingDishes } from '../src/utils/foodMatcher'
 
+// Mock dishes in the current shape: 5 craving categories + fried/protein (multi-value)
+// in tags, and an optional top-level `pork` boolean.
 const mockDishes = [
   {
-    name: 'Dish A',
+    name: 'Chicken Rice',
     tags: {
-      moisture: ['Dry'],
-      protein: ['Light Protein'],
-      carb: ['Rice'],
-      fried: ['Not Fried'],
-      spiciness: ['Mild'],
-      appetite: ['Light Snack']
-    }
+      cuisine: ['Chinese'], moisture: ['Dry'], carb: ['Rice'],
+      spiciness: ['Mild'], appetite: ['Light Meal'],
+      fried: ['Not Fried'], protein: ['Medium Protein'],
+    },
   },
   {
-    name: 'Dish B',
+    name: 'Fried Chicken',
     tags: {
-      moisture: ['Dry'],
-      protein: ['Heavy Protein'],
-      carb: ['Rice'],
-      fried: ['Not Fried'],
-      spiciness: ['Mild'],
-      appetite: ['Light Snack']
-    }
+      cuisine: ['Western'], moisture: ['Dry'], carb: ['Rice'],
+      spiciness: ['Medium'], appetite: ['Heavy Meal'],
+      fried: ['Fried'], protein: ['Protein-Dense'],
+    },
   },
   {
-    name: 'Dish C',
+    name: 'Bak Kut Teh',
+    pork: true,
     tags: {
-      moisture: ['Wet'],
-      protein: ['Heavy Protein'],
-      carb: ['Noodle'],
-      fried: ['Fried'],
-      spiciness: ['Spicy'],
-      appetite: ['Heavy Meal']
-    }
-  }
+      cuisine: ['Chinese'], moisture: ['Soupy'], carb: ['Rice'],
+      spiciness: ['Mild'], appetite: ['Heavy Meal'],
+      fried: ['Not Fried'], protein: ['Protein-Dense'],
+    },
+  },
+  {
+    name: 'Hor Fun', // can be had fried OR not-fried (either-way)
+    tags: {
+      cuisine: ['Chinese'], moisture: ['Saucy'], carb: ['Noodle'],
+      spiciness: ['Mild'], appetite: ['Heavy Meal'],
+      fried: ['Not Fried', 'Fried'], protein: ['Medium Protein'],
+    },
+  },
 ]
 
+const allNames = (result) =>
+  [...result.perfectMatches, ...result.closeMatches].map((d) => d.name)
+
 describe('findMatchingDishes', () => {
-  it('returns perfect match when all categories align', () => {
+  it('marks a dish that matches every answered craving as a perfect match', () => {
     const answers = {
-      moisture: ['Dry'],
-      protein: ['Light Protein'],
-      carb: ['Rice'],
-      fried: ['Not Fried'],
-      spiciness: ['Mild'],
-      appetite: ['Light Snack']
+      cuisine: ['Chinese'], moisture: ['Dry'], carb: ['Rice'],
+      spiciness: ['Mild'], appetite: ['Light Meal'],
     }
 
     const result = findMatchingDishes(answers, mockDishes)
 
-    assert.deepStrictEqual(result.perfectMatches.map(d => d.name), ['Dish A'])
-    assert.deepStrictEqual(result.closeMatches.map(d => d.name), ['Dish B'])
+    assert.deepStrictEqual(result.perfectMatches.map((d) => d.name), ['Chicken Rice'])
   })
 
-  it('returns close match when exactly one category differs', () => {
-    const answers = {
-      moisture: ['Wet'], // differ from Dish B only here
-      protein: ['Heavy Protein'],
-      carb: ['Rice'],
-      fried: ['Not Fried'],
-      spiciness: ['Mild'],
-      appetite: ['Light Snack']
-    }
+  it('never dead-ends: fills close matches when nothing matches perfectly', () => {
+    const answers = { cuisine: ['Korean'] } // no mock dish is Korean
 
     const result = findMatchingDishes(answers, mockDishes)
 
-    assert.deepStrictEqual(result.perfectMatches.map(d => d.name), [])
-    assert.deepStrictEqual(result.closeMatches.map(d => d.name), ['Dish B'])
+    assert.equal(result.perfectMatches.length, 0)
+    assert.ok(result.closeMatches.length > 0)
   })
 
-  it('returns no matches when none align', () => {
-    const answers = {
-      moisture: ['Soupy'],
-      protein: ['Medium Protein'],
-      carb: ['Bread'],
-      fried: ['Grilled'],
-      spiciness: ['Very Spicy'],
-      appetite: ['Dessert']
-    }
+  it('"No Pork" hard-filters pork dishes out', () => {
+    const result = findMatchingDishes({ constraints: ['No Pork'] }, mockDishes)
+    const names = allNames(result)
 
-    const result = findMatchingDishes(answers, mockDishes)
+    assert.ok(!names.includes('Bak Kut Teh'))
+    assert.ok(names.includes('Chicken Rice'))
+  })
 
-    assert.deepStrictEqual(result.perfectMatches, [])
-    assert.deepStrictEqual(result.closeMatches, [])
+  it('"No Fried" excludes always-fried dishes but keeps either-way ones', () => {
+    const result = findMatchingDishes({ constraints: ['No Fried'] }, mockDishes)
+    const names = allNames(result)
+
+    assert.ok(!names.includes('Fried Chicken')) // fried-only → excluded
+    assert.ok(names.includes('Hor Fun')) // can be not-fried → kept
+  })
+
+  it('"High Protein" keeps only protein-dense-capable dishes', () => {
+    const result = findMatchingDishes({ constraints: ['High Protein'] }, mockDishes)
+    const names = allNames(result)
+
+    assert.ok(names.includes('Fried Chicken'))
+    assert.ok(names.includes('Bak Kut Teh'))
+    assert.ok(!names.includes('Chicken Rice')) // medium protein → excluded
+    assert.ok(!names.includes('Hor Fun'))
   })
 })

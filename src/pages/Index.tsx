@@ -3,6 +3,7 @@ import QuestionScreen from '../components/screens/QuestionScreen';
 import ResultsScreen from '../components/screens/ResultsScreen';
 import LandingScreen from '../components/screens/LandingScreen';
 import DotStepper from '../components/quiz/DotStepper';
+import { Button } from '@/components/ui/button';
 import { useMakanQuiz } from '../hooks/useMakanQuiz';
 
 const Index = () => {
@@ -14,6 +15,9 @@ const Index = () => {
     showResults,
     matchResults,
     loadingDishes,
+    loadError,
+    dishesLoaded,
+    retryLoadDishes,
     isAnimating,
     slideDirection,
     disableTransition,
@@ -32,7 +36,7 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-cream p-4">
         <div className="max-w-md mx-auto h-screen flex flex-col py-4 md:py-6">
-          <LandingScreen onStart={handleStartQuiz} isLoading={loadingDishes} />
+          <LandingScreen onStart={handleStartQuiz} />
         </div>
       </div>
     );
@@ -42,11 +46,33 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-cream p-4">
         <div className="max-w-md mx-auto min-h-screen flex flex-col py-6 md:py-8">
-          <ResultsScreen
-            matchResults={matchResults}
-            answers={answers}
-            onStartOver={handleStartOver}
-          />
+          {dishesLoaded ? (
+            <ResultsScreen
+              matchResults={matchResults}
+              answers={answers}
+              onStartOver={handleStartOver}
+            />
+          ) : loadError ? (
+            <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
+              <p className="text-base md:text-lg font-bold text-gray-800 mb-2">
+                Alamak, can't load the menu.
+              </p>
+              <p className="text-sm text-gray-600 mb-6">
+                Check your connection and try again.
+              </p>
+              <Button
+                onClick={retryLoadDishes}
+                disabled={loadingDishes}
+                className="px-6 py-3 bg-brand hover:bg-brand-dark text-white transition-colors"
+              >
+                {loadingDishes ? 'Loading…' : 'Try again'}
+              </Button>
+            </div>
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-gray-600 font-medium animate-pulse">Finding your makan…</div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -70,11 +96,6 @@ const Index = () => {
           isAnimating && slideDirection === 'right' ? 'translate-x-full opacity-0' :
             'translate-x-0 opacity-100'
           }`}>
-          {loadingDishes && (
-            <div className="absolute inset-0 bg-cream/70 flex items-center justify-center z-10 rounded-xl">
-              <div className="text-gray-600 font-medium animate-pulse">Checking for fresh menu...</div>
-            </div>
-          )}
           <QuestionScreen
             question={currentQuestion}
             answers={answers}

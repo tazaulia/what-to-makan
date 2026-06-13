@@ -4,10 +4,9 @@ import { Button } from '@/components/ui/button';
 
 interface LandingScreenProps {
   onStart: () => void;
-  isLoading?: boolean;
 }
 
-const LandingScreen: React.FC<LandingScreenProps> = ({ onStart, isLoading }) => {
+const LandingScreen: React.FC<LandingScreenProps> = ({ onStart }) => {
   return (
     <div className="flex flex-col h-full justify-center items-center text-center px-4 pt-16 pb-16">
       <div className="flex-1 flex flex-col justify-center items-center max-w-sm mx-auto">
@@ -26,10 +25,9 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ onStart, isLoading }) => 
 
         <Button
           onClick={onStart}
-          disabled={isLoading}
-          className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold bg-brand text-white hover:bg-brand-dark transition-colors rounded-lg disabled:opacity-60"
+          className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold bg-brand text-white hover:bg-brand-dark transition-colors rounded-lg"
         >
-          {isLoading ? 'Loading menu...' : "Let's start!"}
+          Let's start!
         </Button>
       </div>
 

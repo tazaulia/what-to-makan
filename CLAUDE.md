@@ -2,23 +2,30 @@
 
 **Live app**: https://makan.taza.me
 
-A food recommendation quiz for Singapore. Users answer 6 questions about what they're in the mood for, and the app matches them against a database of ~98 dishes.
+A food recommendation quiz for Singapore. Users answer 5 "craving" questions plus 1 "constraints" checklist about what they're in the mood for, and the app matches them against a database of ~98 dishes that lives **entirely in a Google Sheet** (no static fallback).
 
 ---
 
 ## Architecture
 
 ```
-User answers 6 questions
+App mounts → fetch dishes from Google Sheet (single source of truth)
+User answers 5 craving questions + 1 constraints checklist
         ↓
 useMakanQuiz (hook) — manages all quiz state
         ↓
-findMatchingDishes(answers, dishes) — scoring algorithm
+findMatchingDishes(answers, dishes) — ranked scoring + constraint filters
         ↓
-ResultsScreen — shows perfect matches + close matches
+ResultsScreen — shows perfect matches + close matches (always ≥1)
 ```
 
 **Page flow**: `LandingScreen` → `QuestionScreen` (×6 with slide transitions) → `ResultsScreen`
+
+**Two kinds of question** (`Question.kind`):
+- `craving` (cuisine, moisture, carb, spiciness, appetite) — softly scored; the more a dish matches, the higher it ranks. Never eliminates dishes.
+- `constraints` (the last screen) — food-rule filters applied on top. Optional/skippable.
+
+**Single source of truth:** dishes come only from the Google Sheet. The landing CTA does **not** wait on the fetch (it runs in the background); if the fetch fails, the results screen shows a "can't load the menu — retry" state instead of a broken quiz.
 
 All quiz state lives in one hook: `src/hooks/useMakanQuiz.ts`. The page component (`src/pages/Index.tsx`) just reads from it.
 
@@ -30,8 +37,7 @@ All quiz state lives in one hook: `src/hooks/useMakanQuiz.ts`. The page componen
 |------|------|
 | `src/hooks/useMakanQuiz.ts` | All quiz state and navigation logic |
 | `src/utils/foodMatcher.ts` | Dish scoring and matching algorithm |
-| `src/data/dishes.ts` | Static dish database (98 dishes, fallback) |
-| `src/data/questions.ts` | The 6 quiz questions |
+| `src/data/questions.ts` | The 5 craving questions + 1 constraints checklist |
 | `src/types/food.ts` | TypeScript interfaces: `Dish`, `Question`, `UserAnswers` |
 | `src/utils/googleSheets.ts` | Fetches live dish data from Google Sheets CSV |
 | `src/components/quiz/DishFeedback.tsx` | "Missing a dish?" suggestion form → Google Apps Script |
@@ -45,90 +51,85 @@ All quiz state lives in one hook: `src/hooks/useMakanQuiz.ts`. The page componen
 
 ---
 
-## The Tag System
+## The Data Model (Google Sheet)
 
-Every dish has tags across 6 categories. Each question maps to one category. Tags on a dish can be multi-value (e.g. `moisture: ["Dry", "Wet"]` means the dish works for both).
+Every dish has 5 **craving** categories (drive the soft scoring) plus 2 **food-rule** multi-value categories and a `pork` boolean (drive the constraints checklist). All categories live in `Dish.tags` except `pork` (a top-level boolean). All are multi-value/pipe-separated so "either way" dishes are preserved. The sheet's "Legend" tab documents this for editors too.
 
-### Valid tag values per category
+### Categories (all multi-value, pipe-separated, in `Dish.tags`)
 
-| Category | Valid values |
-|----------|-------------|
-| `moisture` | `"Dry"`, `"Wet"`, `"Soupy"` |
-| `protein` | `"Light Protein"`, `"Medium Protein"`, `"Protein-Dense"` |
-| `carb` | `"Rice"`, `"Noodle"`, `"Bread"`, `"Low Carb"` |
-| `fried` | `"Fried"`, `"Not Fried"` |
-| `spiciness` | `"Mild"`, `"Medium"`, `"Spicy"` |
-| `appetite` | `"Snack"`, `"Light Meal"`, `"Heavy Meal"` |
+| Category | Valid values | Drives |
+|----------|-------------|--------|
+| `cuisine` | `"Chinese"`, `"Malay"`, `"Indonesian"`, `"Indian"`, `"Japanese"`, `"Korean"`, `"Thai"`, `"Vietnamese"`, `"Western"` | Cuisine question (craving) |
+| `moisture` | `"Dry"`, `"Saucy"`, `"Soupy"` | Moisture question (craving) |
+| `carb` | `"Rice"`, `"Noodle"`, `"Bread"`, `"Low Carb"` | Carb question (craving) |
+| `spiciness` | `"Mild"`, `"Medium"`, `"Spicy"` | Spiciness question (craving) |
+| `appetite` | `"Snack"`, `"Light Meal"`, `"Heavy Meal"` | Appetite question (craving) |
+| `fried` | `"Fried"`, `"Not Fried"` (list both for either-way) | "No fried" → keeps dishes that include `"Not Fried"` |
+| `protein` | `"Light Protein"`, `"Medium Protein"`, `"Protein-Dense"` (list a range) | "High protein" → keeps dishes that include `"Protein-Dense"` |
 
-These exact strings are shared between `questions.ts` (as `options`) and `dishes.ts` (as tag values). They must match exactly for the algorithm to work.
+### Boolean flag (top-level `Dish.pork`)
 
----
+| Flag | Meaning | Drives |
+|------|---------|--------|
+| `pork` | contains pork | "No pork" → hard filter (hide these) |
 
-## How to Add a Dish
+**Why multi-value for fried/protein:** many dishes can be had either way (Hor Fun fried *or* not; Sushi medium *or* protein-dense). Binary flags would wrongly exclude them, so these stay multi-value and the filters check for the *presence* of the qualifying value.
 
-**Option A — Static data (instant, always works):**
-
-Add an entry to `src/data/dishes.ts`:
-
-```typescript
-{
-  name: "Bak Chor Mee",
-  tags: {
-    moisture: ["Dry", "Wet"],
-    protein: ["Medium Protein"],
-    carb: ["Noodle"],
-    fried: ["Not Fried"],
-    spiciness: ["Mild"],
-    appetite: ["Light Meal"],
-  },
-},
-```
-
-Rules:
-- All 6 tag categories must be present
-- Use only the valid values listed in the tag system above
-- A dish can have multiple tags per category (means "matches any of these")
-
-**Option B — Google Sheet (live data, overrides static on app load):**
-
-The app fetches from a public Google Sheet on startup. If the fetch succeeds, its data replaces the static dishes. To add a dish via the sheet, add a row with these columns (pipe-separated for multi-values):
-
-```
-name | moisture | protein | carb | fried | spiciness | appetite
-Bak Chor Mee | Dry|Wet | Medium Protein | Noodle | Not Fried | Mild | Light Meal
-```
+**Display labels are decoupled from tag values.** In `questions.ts`, options are `{ label, value }`. The user sees `label`; matching uses `value`, which must exactly match the sheet strings. `UserAnswers` always stores **values**.
 
 ---
 
-## How to Add a Question
+## How to Add / Edit a Dish
 
-1. Add a new entry to `src/data/questions.ts` with a new `id` and `category`
+**Edit the Google Sheet — it's the only source of truth.** There is no static fallback; the app reads the sheet live on every load. Sheet: `what-to-makan-dishes`, "Dishes" tab. Columns are in **quiz order** (`parseCSVDishes` maps by position — do not reorder without updating the parser):
+
+```
+name | cuisine | moisture | carb | spiciness | appetite | fried | protein | pork
+Bak Chor Mee | Chinese | Dry|Saucy | Noodle | Mild | Light Meal | Not Fried | Medium Protein | TRUE
+```
+
+- Multi-value columns: pipe-separate (e.g. `Dry|Saucy`, `Not Fried|Fried`). Match the valid values above exactly.
+- `pork`: checkbox (`TRUE`/`FALSE`).
+- The "Legend" tab documents all of this for non-technical editors.
+- Edit via the Sheets UI, or programmatically with the `gws` CLI (`gws sheets spreadsheets values ...`).
+
+The CSV column order is positional — `googleSheets.ts` `parseCSVDishes` maps by index, so **don't reorder columns** without updating the parser.
+
+---
+
+## How to Add a Craving Question
+
+1. Add an entry to `src/data/questions.ts` with `kind: 'craving'`, a new `id` and `category`, and `options: [{ label, value }]`
 2. Add the new `category` key to the `Dish.tags` interface in `src/types/food.ts`
-3. Add the new tag array to every dish entry in `src/data/dishes.ts`
-4. Add emoji icons for the new options in `src/components/icons/AnswerIcons.tsx`
+3. Add a column for it in the Google Sheet + the parser (`googleSheets.ts` `parseCSVDishes`) and the Legend tab
+4. Add the category to `CRAVING_CATEGORIES` in `src/utils/foodMatcher.ts`
+5. Add emoji icons (keyed by option **value**) in `src/components/icons/AnswerIcons.tsx`
 
-The `category` field on a question must match a key in `Dish['tags']` — TypeScript enforces this.
+The `category` field must match a key in `Dish['tags']` — TypeScript enforces this. To add a new **constraint** instead, add a value to the `constraints` question's options, a boolean column in the sheet + parser, and handle it in `foodMatcher.ts` (filter).
 
 ---
 
 ## Matching Algorithm (`src/utils/foodMatcher.ts`)
 
+Ranked scoring, not strict AND — the old strict version returned **zero** dishes for ~78% of single-pick combos. The current version always surfaces ~6 dishes.
+
 ```
-For each dish:
-  score = 0, total = 0
-  For each answered question (category):
-    total++
-    if dish.tags[category] includes ANY of the user's selected options:
-      score++
-  mismatches = total - score
+constraints = answers['constraints']   // optional checklist
+1. Hard filter the pool (all three are exclusions/inclusions, not boosts):
+     - "No Pork"      → drop dishes where dish.pork
+     - "No Fried"     → drop dishes whose tags.fried lacks "Not Fried" (can't be had non-fried)
+     - "High Protein" → keep only dishes whose tags.protein includes "Protein-Dense"
+2. Soft-score each remaining dish over CRAVING_CATEGORIES:
+     score++ per category whose tags intersect the user's selected values
+3. Sort by (score desc, random)
 
-Perfect matches: mismatches === 0
-Close matches:   mismatches === 1
+Perfect matches: score === total (all answered cravings matched), capped at 8
+Close matches:   next-best dishes, used to top the list up to ~6 when perfect < 3
 ```
 
-Both result lists are shuffled randomly before display, so order varies each time.
+Order is randomized within equal-score tiers, so it varies each time.
 
-The "I'm fine with anything" button (`handleDontCare`) selects all options for the current question and advances — guaranteeing a match for that category.
+The "Anything works (select all)" button (`handleDontCare`) selects all option **values** for the current craving, holds ~0.5s so the user sees the ticks, then advances. The constraints screen has no such button — it's skippable (tap "Find Food" with nothing selected).
 
 ---
 
@@ -137,7 +138,7 @@ The "I'm fine with anything" button (`handleDontCare`) selects all options for t
 ### Google Sheets (live dish data)
 - **URL**: `https://docs.google.com/spreadsheets/d/e/2PACX-1vSkL_ckVhScJ-qTo39tKf_1OlujLlE2ycGFRDhPCBUS6c83_VnWTy8CVxVN6O-SoYWcnLt7OfuaT0us/pub?gid=0&single=true&output=csv`
 - Defined in: `src/utils/googleSheets.ts` as `GOOGLE_SHEET_CSV_URL`
-- Fetched once on app mount in `useMakanQuiz.ts`; falls back to `dishes.ts` if fetch fails
+- Fetched once on app mount in `useMakanQuiz.ts` (background; landing CTA doesn't wait). **No static fallback** — if the fetch fails, the results screen shows a retry. Header row + "Legend" tab are frozen/documented for editors.
 
 ### Google Apps Script (dish suggestions)
 - **URL**: `https://script.google.com/macros/s/AKfycbxh-QtR5bmJ4tu-NcedHpnfqNkby9Kf3IjakuUCol1V6vqNfrp7kjWIobjBpJaScYB6Sw/exec`
@@ -184,7 +185,9 @@ Defined in `tailwind.config.ts` and usable as Tailwind classes anywhere.
 ## Gotchas
 
 - **TypeScript strict mode is off**: `tsconfig.json` has `"strict": false`. Don't rely on strict null checks.
-- **Dish tags are multi-value by design**: `moisture: ["Dry", "Wet"]` means the dish matches either preference, not that it's both simultaneously.
+- **Craving tags are multi-value by design**: `moisture: ["Dry", "Saucy"]` means the dish matches either preference, not that it's both simultaneously.
+- **No static dish fallback**: the Google Sheet is the only source of truth. If it's unavailable the app shows a retry screen — there's nothing to fall back to. Don't reintroduce a `dishes.ts`; edit the sheet.
+- **Sheet column order is positional**: `parseCSVDishes` maps CSV columns by index. Reordering sheet columns breaks parsing — update the parser if you do.
 - **No routing beyond `/`**: The app is a single-page flow. `NotFound.tsx` exists but there are no other routes.
 - **Data fetching is manual**: All fetching uses `useEffect` + `fetch` directly. No data-fetching library.
 - **CSP will block new external domains**: `vercel.json` sets a strict Content-Security-Policy. If you add a fetch/script/image from a *new* domain, the browser silently blocks it until you add that domain to the matching directive (`connect-src`, `script-src`, `img-src`, etc.) in `vercel.json`.

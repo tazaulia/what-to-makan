@@ -8,35 +8,51 @@ const EmojiIcon: React.FC<{ emoji: string; className?: string }> = ({ emoji, cla
 
 export const getIconByOption = (option: string): React.FC<{ className?: string }> => {
   const iconMap: { [key: string]: string } = {
+    // Cuisine
+    'Chinese': '🥢',
+    'Malay': '🥥',
+    'Indonesian': '🍢',
+    'Indian': '🍛',
+    'Japanese': '🍱',
+    'Korean': '🍲',
+    'Thai': '🍤',
+    'Vietnamese': '🍜',
+    'Western': '🍔',
+
     // Moisture
     'Dry': '🍽️',
-    'Wet': '🍝', 
-    'Soupy': '🍲',
-    
+    'Saucy': '🍝',
+    'Soupy': '🥣',
+
     // Protein
     'Light Protein': '🥚',
-    'Medium Protein': '🍛',
+    'Medium Protein': '🍗',
     'Protein-Dense': '🥩',
-    
+
     // Carb
     'Rice': '🍚',
     'Noodle': '🍜',
     'Bread': '🥖',
-    'Low Carb': '💨',
-    
+    'Low Carb': '🥗',
+
     // Fried
     'Fried': '🍳',
-    'Not Fried': '🥣',
-    
+    'Not Fried': '🍵',
+
     // Spiciness
     'Mild': '🙂',
     'Medium': '🌶️',
     'Spicy': '🔥',
-    
+
     // Appetite
     'Snack': '🍢',
-    'Light Meal': '🍔',
-    'Heavy Meal': '🍱'
+    'Light Meal': '🍙',
+    'Heavy Meal': '🍱',
+
+    // Constraints
+    'No Fried': '🥗',
+    'High Protein': '💪',
+    'No Pork': '🚫',
   };
 
   const emoji = iconMap[option] || '❓';
