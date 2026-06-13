@@ -16,7 +16,8 @@ useMakanQuiz (hook) — manages all quiz state
         ↓
 findMatchingDishes(answers, dishes) — ranked scoring + constraint filters
         ↓
-ResultsScreen — shows perfect matches + close matches (always ≥1)
+ResultsScreen — shows perfect matches + close matches (always ≥1);
+                preferences editable inline to re-rank in place (applyEdits)
 ```
 
 **Page flow**: `LandingScreen` → `QuestionScreen` (×6 with slide transitions) → `ResultsScreen`
@@ -123,11 +124,17 @@ constraints = answers['constraints']   // optional checklist
      score++ per category whose tags intersect the user's selected values
 3. Sort by (score desc, random)
 
-Perfect matches: score === total (all answered cravings matched), capped at 8
-Close matches:   next-best dishes, used to top the list up to ~6 when perfect < 3
+Perfect matches: score === total (all answered cravings matched).
+  - Show ALL perfect matches when the user gave real signal: ≥ MIN_DISCRIMINATING_CRAVINGS (3)
+    cravings narrowed (picked some-but-not-all options). "Anything works" doesn't count —
+    it matches every dish, so it's no preference.
+  - Otherwise cap at MAX_PERFECT (8) so a no-preference run doesn't dump the whole menu.
+Close matches:  only when perfect < 3 — the next-best dishes, capped at MAX_CLOSE (10).
 ```
 
 Order is randomized within equal-score tiers, so it varies each time.
+
+**Inline editing on results (`applyEdits`):** the results screen's "Your Preferences" card lets the user toggle a craving/constraint pill and tap "Update results" to re-rank in place — no full re-quiz. `applyEdits(newAnswers)` (in `useMakanQuiz.ts`) takes the edited answers directly (state is async) and recomputes matches in one shot.
 
 The "Anything works (select all)" button (`handleDontCare`) selects all option **values** for the current craving, holds ~0.5s so the user sees the ticks, then advances. The constraints screen has no such button — it's skippable (tap "Find Food" with nothing selected).
 
