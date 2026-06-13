@@ -94,8 +94,8 @@ const Index = () => {
           total={questionsCount}
         />
 
-        <div className={`flex-1 pb-20 md:pb-8 relative transition-all ease-in-out ${disableTransition ? 'duration-0' : 'duration-350'} ${isAnimating && slideDirection === 'left' ? '-translate-x-full opacity-0' :
-          isAnimating && slideDirection === 'right' ? 'translate-x-full opacity-0' :
+        <div className={`flex-1 pb-20 md:pb-8 relative transition-[transform,opacity] ease-drawer ${disableTransition ? 'duration-0' : 'duration-350'} ${isAnimating && slideDirection === 'left' ? '-translate-x-full opacity-0 motion-reduce:!translate-x-0' :
+          isAnimating && slideDirection === 'right' ? 'translate-x-full opacity-0 motion-reduce:!translate-x-0' :
             'translate-x-0 opacity-100'
           }`}>
           <QuestionScreen

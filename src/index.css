@@ -97,5 +97,27 @@
 
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Reduced motion: keep comprehension-aiding fades, drop positional/scale
+     motion. Neutralises tailwindcss-animate's enter transforms so `animate-in`
+     elements still fade in, just without sliding or zooming. */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-in {
+      --tw-enter-translate-x: 0 !important;
+      --tw-enter-translate-y: 0 !important;
+      --tw-enter-scale: 1 !important;
+      --tw-enter-rotate: 0 !important;
+    }
   }
 }

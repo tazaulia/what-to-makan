@@ -113,7 +113,7 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 <button
                   onClick={() => toggleOption(value)}
                   disabled={isAnimating}
-                  className={`w-full p-3 md:p-4 rounded-xl border-2 text-sm md:text-base font-medium transition-all duration-200 flex items-center ${
+                  className={`w-full p-3 md:p-4 rounded-xl border-2 text-sm md:text-base font-medium transition-[background-color,border-color,color,transform] duration-200 active:scale-[0.98] motion-reduce:active:scale-100 flex items-center ${
                     isSelected
                       ? 'bg-brand-light text-gray-700 border-brand'
                       : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:bg-gray-50'

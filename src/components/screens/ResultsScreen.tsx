@@ -130,7 +130,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
             {!isEditing && (
               <button
                 onClick={openEdit}
-                className="flex items-center gap-1.5 text-xs md:text-sm font-medium text-brand hover:text-brand-dark transition-colors"
+                className="-my-2 -mr-2 flex min-h-[40px] items-center gap-1.5 rounded-lg px-2 py-2 text-xs md:text-sm font-medium text-brand hover:text-brand-dark hover:bg-brand-light transition-[color,background-color,transform] active:scale-[0.96] motion-reduce:active:scale-100"
                 aria-label="Edit your preferences"
               >
                 <Pencil className="w-3.5 h-3.5" />
@@ -236,7 +236,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
           {perfectMatches.length > 0 && (
             <div className="space-y-3 mb-6">
               {perfectMatches.map((dish, index) => (
-                <DishCard key={`${dish.name}-${index}`} dish={dish} onLocationClick={handleLocationClick} />
+                <DishCard key={`${dish.name}-${index}`} dish={dish} index={index} onLocationClick={handleLocationClick} />
               ))}
             </div>
           )}
@@ -248,7 +248,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
               </h2>
               <div className="space-y-3 pb-6">
                 {closeMatches.map((dish, index) => (
-                  <DishCard key={`${dish.name}-${index}`} dish={dish} onLocationClick={handleLocationClick} />
+                  <DishCard key={`${dish.name}-${index}`} dish={dish} index={index} onLocationClick={handleLocationClick} />
                 ))}
               </div>
             </>
