@@ -15,21 +15,28 @@ export async function fetchDishesFromSheets(url: string): Promise<Dish[]> {
     }
 }
 
+const truthy = (v: string | undefined) => /^(yes|true|1)$/i.test((v || '').trim());
+const multi = (v: string | undefined) => (v?.split('|').map(s => s.trim()).filter(Boolean)) || [];
+
+// Sheet columns (see the "Legend" tab):
+// 0 name | 1 moisture | 2 highProtein | 3 carb | 4 fried | 5 spiciness | 6 appetite | 7 cuisine | 8 pork
 function parseCSVDishes(csv: string): Dish[] {
     const lines = csv.split('\n');
 
     return lines.slice(1).filter(line => line.trim() !== '').map(line => {
-        const cleanValues = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+        const c = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
 
         return {
-            name: cleanValues[0],
+            name: c[0],
+            highProtein: truthy(c[2]),
+            fried: truthy(c[4]),
+            pork: truthy(c[8]),
             tags: {
-                moisture: cleanValues[1]?.split('|') || [],
-                protein: cleanValues[2]?.split('|') || [],
-                carb: cleanValues[3]?.split('|') || [],
-                fried: cleanValues[4]?.split('|') || [],
-                spiciness: cleanValues[5]?.split('|') || [],
-                appetite: cleanValues[6]?.split('|') || [],
+                cuisine: multi(c[7]),
+                moisture: multi(c[1]),
+                carb: multi(c[3]),
+                spiciness: multi(c[5]),
+                appetite: multi(c[6]),
             }
         } as Dish;
     });
