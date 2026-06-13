@@ -127,6 +127,17 @@ export const useMakanQuiz = () => {
         }, 500);
     };
 
+    // Re-rank from the results screen after the user tweaks a preference inline.
+    // Takes the edited answers directly (state updates are async, so we can't read
+    // `answers` back in time) and recomputes in one shot. Dishes are always loaded
+    // here — Index only renders the results screen once dishesLoaded is true.
+    const applyEdits = (newAnswers: UserAnswers) => {
+        setAnswers(newAnswers);
+        if (dishes.length > 0) {
+            setMatchResults(findMatchingDishes(newAnswers, dishes));
+        }
+    };
+
     const handleStartOver = () => {
         setShowLanding(true);
         setCurrentQuestionIndex(0);
@@ -163,6 +174,7 @@ export const useMakanQuiz = () => {
         handlePrevious,
         handleDontCare,
         handleStartOver,
+        applyEdits,
         questionsCount: questions.length
     };
 };

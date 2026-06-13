@@ -29,6 +29,7 @@ const Index = () => {
     handlePrevious,
     handleDontCare,
     handleStartOver,
+    applyEdits,
     questionsCount
   } = useMakanQuiz();
 
@@ -51,6 +52,7 @@ const Index = () => {
               matchResults={matchResults}
               answers={answers}
               onStartOver={handleStartOver}
+              onApplyEdits={applyEdits}
             />
           ) : loadError ? (
             <div className="flex-1 flex flex-col items-center justify-center text-center px-4">

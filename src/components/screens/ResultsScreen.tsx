@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { UserAnswers } from '../../types/food';
 import { Button } from '@/components/ui/button';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Pencil, Check } from 'lucide-react';
 import { getIconByOption } from '../icons/AnswerIcons';
 import { MatchResults } from '../../utils/foodMatcher';
 import { questions } from '../../data/questions';
@@ -13,33 +13,66 @@ interface ResultsScreenProps {
   matchResults: MatchResults;
   answers: UserAnswers;
   onStartOver: () => void;
+  /** Commit edited answers and re-rank the dishes, staying on the results screen. */
+  onApplyEdits: (newAnswers: UserAnswers) => void;
 }
 
-const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, onStartOver }) => {
+const randomCopyOptions = [
+  "We read your taste, now you just pick.",
+  "Aiyah, don't stress. Just pick one of these.",
+  "Hungry liao right? Faster choose.",
+  "So picky ah. Ok bo here's your list.",
+  "Here you go, options confirm shiok.",
+  "Scroll no more — whack one already.",
+  "Wah, your appetite today quite solid hor.",
+  "The faster you pick, the faster you eat.",
+  "Walao. You pick so slow, later stall close liao!",
+  "Got noodle, got rice, got everything lah.",
+  "Confirm got something you like inside.",
+  "Got taste sia. These picks all confirm sedap.",
+  "This list, your ahma also approve one.",
+  "This one? Solid. That one? Also can."
+];
+
+const getRandomCopy = () => randomCopyOptions[Math.floor(Math.random() * randomCopyOptions.length)];
+
+const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, onStartOver, onApplyEdits }) => {
   useEffect(() => {
     // Ensure we start at the top of the results page
     window.scrollTo(0, 0);
   }, []);
 
-  const randomCopyOptions = [
-    "We read your taste, now you just pick.",
-    "Aiyah, don't stress. Just pick one of these.",
-    "Hungry liao right? Faster choose.",
-    "So picky ah. Ok bo here's your list.",
-    "Here you go, options confirm shiok.",
-    "Scroll no more — whack one already.",
-    "Wah, your appetite today quite solid hor.",
-    "The faster you pick, the faster you eat.",
-    "Walao. You pick so slow, later stall close liao!",
-    "Got noodle, got rice, got everything lah.",
-    "Confirm got something you like inside.",
-    "Got taste sia. These picks all confirm sedap.",
-    "This list, your ahma also approve one.",
-    "This one? Solid. That one? Also can."
-  ];
+  // Pick the Singlish subtitle once on mount; only re-roll when the user
+  // commits an edit (not on every render, e.g. toggling a pill mid-edit).
+  const [copy, setCopy] = useState(getRandomCopy);
 
-  const getRandomCopy = () => {
-    return randomCopyOptions[Math.floor(Math.random() * randomCopyOptions.length)];
+  // Inline editing: tweak one preference without redoing the whole quiz.
+  // `draft` is a working copy so "Cancel" can discard without touching results.
+  const [isEditing, setIsEditing] = useState(false);
+  const [draft, setDraft] = useState<UserAnswers>(answers);
+
+  const openEdit = () => {
+    setDraft(answers);
+    setIsEditing(true);
+  };
+
+  const cancelEdit = () => setIsEditing(false);
+
+  const applyEdit = () => {
+    onApplyEdits(draft);
+    setCopy(getRandomCopy());
+    setIsEditing(false);
+    window.scrollTo(0, 0);
+  };
+
+  const toggleDraft = (questionId: string, value: string) => {
+    setDraft(prev => {
+      const current = prev[questionId] || [];
+      const next = current.includes(value)
+        ? current.filter(v => v !== value)
+        : [...current, value];
+      return { ...prev, [questionId]: next };
+    });
   };
 
   const getCondensedPreferences = () => {
@@ -88,12 +121,69 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ matchResults, answers, on
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-3">
             🍽️ What to Makan SG
           </h1>
-          <p className="text-sm md:text-base text-gray-600">{getRandomCopy()}</p>
+          <p className="text-sm md:text-base text-gray-600">{copy}</p>
         </div>
 
         <div className="bg-white rounded-xl p-4 mb-6 border border-gray-200">
-          <h3 className="font-semibold text-gray-800 mb-3 text-sm md:text-base">Your Preferences:</h3>
-          {condensedPreferences.length > 0 ? (
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-gray-800 text-sm md:text-base">Your Preferences:</h3>
+            {!isEditing && (
+              <button
+                onClick={openEdit}
+                className="flex items-center gap-1.5 text-xs md:text-sm font-medium text-brand hover:text-brand-dark transition-colors"
+                aria-label="Edit your preferences"
+              >
+                <Pencil className="w-3.5 h-3.5" />
+                Edit
+              </button>
+            )}
+          </div>
+
+          {isEditing ? (
+            <div className="space-y-4">
+              {questions.map(question => (
+                <div key={question.id}>
+                  <p className="text-xs md:text-sm font-semibold text-gray-600 mb-2">{question.text}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {question.options.map(({ label, value }) => {
+                      const IconComponent = getIconByOption(value);
+                      const isSelected = (draft[question.id] || []).includes(value);
+                      return (
+                        <button
+                          key={value}
+                          onClick={() => toggleDraft(question.id, value)}
+                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs md:text-sm font-medium transition-colors ${
+                            isSelected
+                              ? 'bg-brand-light text-gray-800 border-brand'
+                              : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          <IconComponent className="w-3.5 h-3.5 flex-shrink-0" />
+                          {label}
+                          {isSelected && <Check className="w-3 h-3 text-brand" strokeWidth={3} />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+              <div className="flex gap-3 pt-1">
+                <Button
+                  onClick={cancelEdit}
+                  variant="outline"
+                  className="flex-1 py-2.5 text-xs md:text-sm"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={applyEdit}
+                  className="flex-1 py-2.5 bg-brand hover:bg-brand-dark text-white transition-colors text-xs md:text-sm"
+                >
+                  Update results
+                </Button>
+              </div>
+            </div>
+          ) : condensedPreferences.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {condensedPreferences.map(({ option, icon: IconComponent }, index) => (
                 <div key={`${option}-${index}`} className="flex items-center gap-2 bg-gray-50 px-2.5 py-1.5 rounded-lg">
