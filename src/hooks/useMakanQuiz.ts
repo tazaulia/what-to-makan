@@ -22,6 +22,8 @@ export const useMakanQuiz = () => {
     const [disableTransition, setDisableTransition] = useState(false);
     // Brief pause after "Anything works (select all)" so the user sees every option tick before advancing.
     const [isSelectingAll, setIsSelectingAll] = useState(false);
+    // True when the user reached results before the menu finished loading; compute once it arrives.
+    const [pendingMatch, setPendingMatch] = useState(false);
 
     // Fetch the menu in the background. The landing CTA never waits on this — by the
     // time the user has answered the quiz it's long done; if it failed, results shows a retry.
@@ -40,13 +42,15 @@ export const useMakanQuiz = () => {
     useEffect(() => { loadDishes(); }, [loadDishes]);
 
     // Compute matches once the menu is available (covers the rare case where the user
-    // reaches the results screen before the background fetch has finished).
+    // reaches the results screen before the background fetch has finished). Gated on an
+    // explicit flag — never on matchResults emptiness — so a genuinely empty result set
+    // (all dishes filtered out) can't trigger a re-compute loop.
     useEffect(() => {
-        if (showResults && dishes.length > 0 &&
-            matchResults.perfectMatches.length === 0 && matchResults.closeMatches.length === 0) {
+        if (pendingMatch && dishes.length > 0) {
             setMatchResults(findMatchingDishes(answers, dishes));
+            setPendingMatch(false);
         }
-    }, [showResults, dishes, answers, matchResults]);
+    }, [pendingMatch, dishes, answers]);
 
     const currentQuestion = questions[currentQuestionIndex];
     const isFirst = currentQuestionIndex === 0;
@@ -88,8 +92,13 @@ export const useMakanQuiz = () => {
         if (isAnimating) return;
 
         if (isLast) {
-            // Compute now if the menu is ready; otherwise the effect above does it on load.
-            setMatchResults(dishes.length > 0 ? findMatchingDishes(answers, dishes) : EMPTY_RESULTS);
+            // Compute now if the menu is ready; otherwise flag it for the effect to run on load.
+            if (dishes.length > 0) {
+                setMatchResults(findMatchingDishes(answers, dishes));
+            } else {
+                setMatchResults(EMPTY_RESULTS);
+                setPendingMatch(true);
+            }
             setShowResults(true);
             window.scrollTo(0, 0);
         } else {
@@ -128,6 +137,7 @@ export const useMakanQuiz = () => {
         setSlideDirection('none');
         setDisableTransition(false);
         setIsSelectingAll(false);
+        setPendingMatch(false);
     };
 
     return {
