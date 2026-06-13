@@ -35,11 +35,13 @@ export function findMatchingDishes(
   const noPork = constraints.includes(NO_PORK);
   const highProtein = constraints.includes(HIGH_PROTEIN);
 
-  // 1. Hard filter on the food rules the user picked.
+  // 1. Hard filter on the food rules the user picked. fried/protein are multi-value,
+  //    so "either way" dishes survive: a dish that *can* be non-fried passes "No fried",
+  //    and a dish that *can* be protein-dense passes "High protein".
   const pool = allDishes.filter(dish => {
     if (noPork && dish.pork) return false;
-    if (noFried && dish.fried) return false;
-    if (highProtein && !dish.highProtein) return false;
+    if (noFried && !dish.tags.fried.includes('Not Fried')) return false;
+    if (highProtein && !dish.tags.protein.includes('Protein-Dense')) return false;
     return true;
   });
 

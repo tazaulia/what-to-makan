@@ -1,16 +1,19 @@
 
 export interface Dish {
   name: string;
-  /** Food-rule flags (not cravings). Used by the constraints checklist. */
-  pork?: boolean;        // contains pork → hidden by "No pork"
-  fried?: boolean;       // always deep-fried → hidden by "No fried"
-  highProtein?: boolean; // protein-dense → "High protein" shows only these
+  /** Contains pork → hidden by the "No pork" food rule. */
+  pork?: boolean;
   tags: {
+    // Craving categories (scored softly)
     cuisine: string[];
     moisture: string[];
     carb: string[];
     spiciness: string[];
     appetite: string[];
+    // Food-rule categories (multi-value so "either way" dishes are preserved):
+    // fried can be ["Not Fried", "Fried"]; protein can span ["Medium Protein", "Protein-Dense"].
+    fried: string[];
+    protein: string[];
   };
 }
 

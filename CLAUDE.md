@@ -2,7 +2,7 @@
 
 **Live app**: https://makan.taza.me
 
-A food recommendation quiz for Singapore. Users answer 5 "craving" questions plus 1 "constraints" checklist about what they're in the mood for, and the app matches them against a database of ~99 dishes that lives **entirely in a Google Sheet** (no static fallback).
+A food recommendation quiz for Singapore. Users answer 5 "craving" questions plus 1 "constraints" checklist about what they're in the mood for, and the app matches them against a database of ~98 dishes that lives **entirely in a Google Sheet** (no static fallback).
 
 ---
 
@@ -53,25 +53,27 @@ All quiz state lives in one hook: `src/hooks/useMakanQuiz.ts`. The page componen
 
 ## The Data Model (Google Sheet)
 
-Every dish has 5 multi-value **craving** categories (drive the soft scoring) and 3 boolean **food-rule** flags (drive the constraints checklist). The sheet's "Legend" tab documents this for editors too.
+Every dish has 5 **craving** categories (drive the soft scoring) plus 2 **food-rule** multi-value categories and a `pork` boolean (drive the constraints checklist). All categories live in `Dish.tags` except `pork` (a top-level boolean). All are multi-value/pipe-separated so "either way" dishes are preserved. The sheet's "Legend" tab documents this for editors too.
 
-### Craving categories (multi-value, pipe-separated)
+### Categories (all multi-value, pipe-separated, in `Dish.tags`)
 
 | Category | Valid values | Drives |
 |----------|-------------|--------|
-| `cuisine` | `"Chinese"`, `"Malay"`, `"Indonesian"`, `"Indian"`, `"Japanese"`, `"Korean"`, `"Thai"`, `"Vietnamese"`, `"Western"` | Cuisine question |
-| `moisture` | `"Dry"`, `"Saucy"`, `"Soupy"` | Moisture question |
-| `carb` | `"Rice"`, `"Noodle"`, `"Bread"`, `"Low Carb"` | Carb question |
-| `spiciness` | `"Mild"`, `"Medium"`, `"Spicy"` | Spiciness question |
-| `appetite` | `"Snack"`, `"Light Meal"`, `"Heavy Meal"` | Appetite question |
+| `cuisine` | `"Chinese"`, `"Malay"`, `"Indonesian"`, `"Indian"`, `"Japanese"`, `"Korean"`, `"Thai"`, `"Vietnamese"`, `"Western"` | Cuisine question (craving) |
+| `moisture` | `"Dry"`, `"Saucy"`, `"Soupy"` | Moisture question (craving) |
+| `carb` | `"Rice"`, `"Noodle"`, `"Bread"`, `"Low Carb"` | Carb question (craving) |
+| `spiciness` | `"Mild"`, `"Medium"`, `"Spicy"` | Spiciness question (craving) |
+| `appetite` | `"Snack"`, `"Light Meal"`, `"Heavy Meal"` | Appetite question (craving) |
+| `fried` | `"Fried"`, `"Not Fried"` (list both for either-way) | "No fried" → keeps dishes that include `"Not Fried"` |
+| `protein` | `"Light Protein"`, `"Medium Protein"`, `"Protein-Dense"` (list a range) | "High protein" → keeps dishes that include `"Protein-Dense"` |
 
-### Food-rule flags (boolean checkboxes → top-level `Dish` props, not `tags`)
+### Boolean flag (top-level `Dish.pork`)
 
 | Flag | Meaning | Drives |
 |------|---------|--------|
-| `highProtein` | dish is protein-dense | "High protein" → hard filter (show only these) |
-| `fried` | dish is **always** deep-fried (can't be had non-fried) | "No fried" → hard filter (hide these) |
 | `pork` | contains pork | "No pork" → hard filter (hide these) |
+
+**Why multi-value for fried/protein:** many dishes can be had either way (Hor Fun fried *or* not; Sushi medium *or* protein-dense). Binary flags would wrongly exclude them, so these stay multi-value and the filters check for the *presence* of the qualifying value.
 
 **Display labels are decoupled from tag values.** In `questions.ts`, options are `{ label, value }`. The user sees `label`; matching uses `value`, which must exactly match the sheet strings. `UserAnswers` always stores **values**.
 
@@ -79,15 +81,15 @@ Every dish has 5 multi-value **craving** categories (drive the soft scoring) and
 
 ## How to Add / Edit a Dish
 
-**Edit the Google Sheet — it's the only source of truth.** There is no static fallback; the app reads the sheet live on every load. Sheet: `what-to-makan-dishes`, "Dishes" tab. Columns:
+**Edit the Google Sheet — it's the only source of truth.** There is no static fallback; the app reads the sheet live on every load. Sheet: `what-to-makan-dishes`, "Dishes" tab. Columns are in **quiz order** (`parseCSVDishes` maps by position — do not reorder without updating the parser):
 
 ```
-name | moisture | highProtein | carb | fried | spiciness | appetite | cuisine | pork
-Bak Chor Mee | Dry|Saucy | FALSE | Noodle | FALSE | Mild | Light Meal | Chinese | TRUE
+name | cuisine | moisture | carb | spiciness | appetite | fried | protein | pork
+Bak Chor Mee | Chinese | Dry|Saucy | Noodle | Mild | Light Meal | Not Fried | Medium Protein | TRUE
 ```
 
-- Multi-value craving columns: pipe-separate (e.g. `Dry|Saucy`). Match the valid values above exactly.
-- `highProtein` / `fried` / `pork`: checkboxes (`TRUE`/`FALSE`).
+- Multi-value columns: pipe-separate (e.g. `Dry|Saucy`, `Not Fried|Fried`). Match the valid values above exactly.
+- `pork`: checkbox (`TRUE`/`FALSE`).
 - The "Legend" tab documents all of this for non-technical editors.
 - Edit via the Sheets UI, or programmatically with the `gws` CLI (`gws sheets spreadsheets values ...`).
 
@@ -115,8 +117,8 @@ Ranked scoring, not strict AND — the old strict version returned **zero** dish
 constraints = answers['constraints']   // optional checklist
 1. Hard filter the pool (all three are exclusions/inclusions, not boosts):
      - "No Pork"      → drop dishes where dish.pork
-     - "No Fried"     → drop dishes where dish.fried (always-fried)
-     - "High Protein" → keep only dishes where dish.highProtein
+     - "No Fried"     → drop dishes whose tags.fried lacks "Not Fried" (can't be had non-fried)
+     - "High Protein" → keep only dishes whose tags.protein includes "Protein-Dense"
 2. Soft-score each remaining dish over CRAVING_CATEGORIES:
      score++ per category whose tags intersect the user's selected values
 3. Sort by (score desc, random)

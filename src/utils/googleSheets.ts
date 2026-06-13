@@ -18,8 +18,8 @@ export async function fetchDishesFromSheets(url: string): Promise<Dish[]> {
 const truthy = (v: string | undefined) => /^(yes|true|1)$/i.test((v || '').trim());
 const multi = (v: string | undefined) => (v?.split('|').map(s => s.trim()).filter(Boolean)) || [];
 
-// Sheet columns (see the "Legend" tab):
-// 0 name | 1 moisture | 2 highProtein | 3 carb | 4 fried | 5 spiciness | 6 appetite | 7 cuisine | 8 pork
+// Sheet columns are in quiz order (see the "Legend" tab) — do not reorder without updating this:
+// 0 name | 1 cuisine | 2 moisture | 3 carb | 4 spiciness | 5 appetite | 6 fried | 7 protein | 8 pork
 function parseCSVDishes(csv: string): Dish[] {
     const lines = csv.split('\n');
 
@@ -28,15 +28,15 @@ function parseCSVDishes(csv: string): Dish[] {
 
         return {
             name: c[0],
-            highProtein: truthy(c[2]),
-            fried: truthy(c[4]),
             pork: truthy(c[8]),
             tags: {
-                cuisine: multi(c[7]),
-                moisture: multi(c[1]),
+                cuisine: multi(c[1]),
+                moisture: multi(c[2]),
                 carb: multi(c[3]),
-                spiciness: multi(c[5]),
-                appetite: multi(c[6]),
+                spiciness: multi(c[4]),
+                appetite: multi(c[5]),
+                fried: multi(c[6]),
+                protein: multi(c[7]),
             }
         } as Dish;
     });
